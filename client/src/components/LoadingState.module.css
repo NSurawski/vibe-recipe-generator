@@ -1,0 +1,39 @@
+.container {
+  text-align: center;
+  padding: 3rem 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.emoji {
+  font-size: 3rem;
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.text {
+  margin-top: 1rem;
+  font-size: 1.15rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.dots::after {
+  content: "";
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+}

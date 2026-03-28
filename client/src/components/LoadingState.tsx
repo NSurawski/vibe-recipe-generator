@@ -1,0 +1,23 @@
+import styles from "./LoadingState.module.css";
+
+const MESSAGES = [
+  "Channeling your vibe into flavor",
+  "Raiding the pantry of imagination",
+  "Seasoning with creativity",
+  "Plating something special",
+  "Consulting the culinary cosmos",
+];
+
+export default function LoadingState() {
+  const message = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.emoji}>🍳</div>
+      <p className={styles.text}>
+        {message}
+        <span className={styles.dots} />
+      </p>
+    </div>
+  );
+}
