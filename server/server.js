@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import Anthropic from "@anthropic-ai/sdk";
 
 const app = express();
@@ -8,6 +9,16 @@ const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+const recipeRateLimit = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests — please wait a moment before trying again." },
+});
+
+app.use("/api/recipe", recipeRateLimit);
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -30,8 +41,16 @@ Return ONLY valid JSON matching this exact schema:
 
 Be creative and specific. The recipe should feel intentional — not generic. If someone says "chaotic brunch energy", don't give them plain pancakes. Give them something that feels chaotic and brunch-y.`;
 
+const DIETARY_CONSTRAINTS = {
+  vegetarian: "The recipe MUST be vegetarian. Do not include meat, poultry, or seafood.",
+  vegan: "The recipe MUST be vegan. Do not include any animal products — no meat, poultry, seafood, dairy, eggs, or honey.",
+  "gluten-free": "The recipe MUST be gluten-free. Do not include wheat, barley, rye, or regular oats. Use only certified gluten-free ingredients.",
+};
+
+const ALLOWED_FILTERS = new Set(Object.keys(DIETARY_CONSTRAINTS));
+
 app.post("/api/recipe", async (req, res) => {
-  const { vibe } = req.body;
+  const { vibe, filters } = req.body;
 
   if (!vibe || typeof vibe !== "string" || vibe.trim().length === 0) {
     return res.status(400).json({ error: "Please provide a vibe description" });
@@ -41,8 +60,21 @@ app.post("/api/recipe", async (req, res) => {
     return res.status(400).json({ error: "Vibe description is too long (max 500 characters)" });
   }
 
+  const activeFilters = Array.isArray(filters)
+    ? filters.filter((f) => ALLOWED_FILTERS.has(f))
+    : [];
+
+  const constraintBlock = activeFilters.length > 0
+    ? "\n\nDIETARY CONSTRAINTS (hard requirements — do not violate these under any circumstances):\n" +
+      activeFilters.map((f) => `- ${DIETARY_CONSTRAINTS[f]}`).join("\n")
+    : "";
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
   try {
-    const message = await anthropic.messages.create({
+    const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
       messages: [
@@ -51,27 +83,33 @@ app.post("/api/recipe", async (req, res) => {
           content: `Generate a recipe for this vibe: "${vibe.trim()}"`,
         },
       ],
-      system: RECIPE_PROMPT,
+      system: RECIPE_PROMPT + constraintBlock,
     });
 
-    const text = message.content[0].text;
-    const recipe = JSON.parse(text);
+    for await (const event of stream) {
+      if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
+      }
+    }
 
-    res.json(recipe);
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
   } catch (err) {
     console.error("Recipe generation failed:", err.message);
 
-    if (err.status === 401) {
-      return res.status(401).json({ error: "Invalid API key" });
-    }
-    if (err.status === 429) {
-      return res.status(429).json({ error: "Rate limited — try again in a moment" });
-    }
+    let errorMessage = "Failed to generate recipe. Please try again.";
+    if (err.status === 401) errorMessage = "Invalid API key";
+    else if (err.status === 429) errorMessage = "Rate limited — try again in a moment";
 
-    res.status(500).json({ error: "Failed to generate recipe. Please try again." });
+    res.write(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
+    res.end();
   }
 });
 
-app.listen(port, () => {
-  console.log(`Vibe Recipe Server running on http://localhost:${port}`);
-});
+export { app };
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
+    console.log(`Vibe Recipe Server running on http://localhost:${port}`);
+  });
+}

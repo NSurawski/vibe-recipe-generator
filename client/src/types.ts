@@ -1,3 +1,5 @@
+export type DietaryFilter = "vegetarian" | "vegan" | "gluten-free";
+
 export interface Ingredient {
   item: string;
   amount: string;

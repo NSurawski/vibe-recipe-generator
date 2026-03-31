@@ -37,3 +37,20 @@
   50% { content: ".."; }
   75% { content: "..."; }
 }
+
+.stream {
+  max-width: 600px;
+  margin: 1.5rem auto 0;
+  padding: 1rem 1.25rem;
+  background: #1f2937;
+  color: #86efac;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: "Courier New", monospace;
+}
