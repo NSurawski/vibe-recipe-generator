@@ -6,20 +6,40 @@ interface RecipeHistoryProps {
   onSelect: (entry: HistoryEntry) => void;
 }
 
+function EntryList({ entries, onSelect }: { entries: HistoryEntry[]; onSelect: (e: HistoryEntry) => void }) {
+  return (
+    <ul className={styles.list}>
+      {entries.map((entry, i) => (
+        <li key={i}>
+          <button className={styles.button} onClick={() => onSelect(entry)}>
+            <span className={styles.recipeTitle}>{entry.recipe.title}</span>
+            <span className={styles.vibe}>"{entry.vibe}"</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function RecipeHistory({ history, onSelect }: RecipeHistoryProps) {
+  const favorites = history.filter((e) => e.favorited);
+  const recent = history.filter((e) => !e.favorited);
+
   return (
     <section className={styles.container}>
-      <h3 className={styles.heading}>Recent Recipes</h3>
-      <ul className={styles.list}>
-        {history.map((entry, i) => (
-          <li key={i}>
-            <button className={styles.button} onClick={() => onSelect(entry)}>
-              <span className={styles.recipeTitle}>{entry.recipe.title}</span>
-              <span className={styles.vibe}>"{entry.vibe}"</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      {favorites.length > 0 && (
+        <>
+          <h3 className={styles.heading}>★ Saved</h3>
+          <EntryList entries={favorites} onSelect={onSelect} />
+          {recent.length > 0 && <div className={styles.divider} />}
+        </>
+      )}
+      {recent.length > 0 && (
+        <>
+          <h3 className={styles.heading}>Recent</h3>
+          <EntryList entries={recent} onSelect={onSelect} />
+        </>
+      )}
     </section>
   );
 }

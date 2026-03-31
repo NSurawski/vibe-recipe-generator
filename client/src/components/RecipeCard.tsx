@@ -5,12 +5,16 @@ interface RecipeCardProps {
   recipe: Recipe;
   onRegenerate: () => void;
   isLoading: boolean;
+  isFavorited?: boolean;
+  onToggleFavorite?: () => void;
 }
 
 export default function RecipeCard({
   recipe,
   onRegenerate,
   isLoading,
+  isFavorited = false,
+  onToggleFavorite,
 }: RecipeCardProps) {
   return (
     <article className={styles.card}>
@@ -56,6 +60,14 @@ export default function RecipeCard({
       <div className={styles.vibeNotes}>{recipe.vibe_notes}</div>
 
       <div className={styles.actions}>
+        {onToggleFavorite && (
+          <button
+            className={`${styles.saveBtn} ${isFavorited ? styles.saveBtnActive : ""}`}
+            onClick={onToggleFavorite}
+          >
+            {isFavorited ? "★ Saved" : "☆ Save recipe"}
+          </button>
+        )}
         <button
           className={styles.regenerateBtn}
           onClick={onRegenerate}

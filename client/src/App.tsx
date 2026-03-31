@@ -7,7 +7,8 @@ import RecipeHistory from "./components/RecipeHistory";
 import { useRecipeHistory } from "./hooks/useRecipeHistory";
 import styles from "./App.module.css";
 
-const API_URL = "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+const REQUEST_TIMEOUT_MS = 30_000;
 
 export default function App() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -15,7 +16,11 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [streamingText, setStreamingText] = useState("");
   const lastVibe = useRef("");
-  const { history, addToHistory } = useRecipeHistory();
+  const { history, addToHistory, toggleFavorite } = useRecipeHistory();
+
+  const isFavorited = recipe
+    ? (history.find((e) => e.recipe.title === recipe.title)?.favorited ?? false)
+    : false;
 
   const generateRecipe = async (vibe: string) => {
     lastVibe.current = vibe;
@@ -23,11 +28,15 @@ export default function App() {
     setError(null);
     setStreamingText("");
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
     try {
       const res = await fetch(`${API_URL}/api/recipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vibe }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -77,10 +86,13 @@ export default function App() {
         }
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to generate recipe"
-      );
+      if (err instanceof Error && err.name === "AbortError") {
+        setError("Request timed out — please try again.");
+      } else {
+        setError(err instanceof Error ? err.message : "Failed to generate recipe");
+      }
     } finally {
+      clearTimeout(timeout);
       setIsLoading(false);
       setStreamingText("");
     }
@@ -112,6 +124,8 @@ export default function App() {
           recipe={recipe}
           onRegenerate={handleRegenerate}
           isLoading={isLoading}
+          isFavorited={isFavorited}
+          onToggleFavorite={() => toggleFavorite(recipe.title)}
         />
       )}
 
