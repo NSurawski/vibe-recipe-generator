@@ -41,6 +41,17 @@ npm run dev        # Start Vite dev server (port 5173)
 npm run build      # Type-check + production build
 ```
 
+## Git Identity
+
+Always commit as the repository owner — never use Claude's identity:
+
+```bash
+git config user.name "NSurawski"
+git config user.email "nicolesurawski@gmail.com"
+```
+
+Run this at the start of any session before making commits.
+
 ## Conventions
 
 - **CSS Modules:** Each component has a co-located `.module.css` file. Use `styles.className` imports, not global classes.
