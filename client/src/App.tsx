@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import type { Recipe } from "./types";
+import type { Recipe, DietaryFilter } from "./types";
 import VibeInput from "./components/VibeInput";
 import RecipeCard from "./components/RecipeCard";
 import LoadingState from "./components/LoadingState";
@@ -16,7 +16,9 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [streamingText, setStreamingText] = useState("");
   const [vibe, setVibe] = useState("");
+  const [filters, setFilters] = useState<DietaryFilter[]>([]);
   const lastVibe = useRef("");
+  const lastFilters = useRef<DietaryFilter[]>([]);
   const { history, addToHistory, toggleFavorite } = useRecipeHistory();
 
   const isFavorited = recipe
@@ -25,6 +27,7 @@ export default function App() {
 
   const generateRecipe = async (vibe: string) => {
     lastVibe.current = vibe;
+    lastFilters.current = filters;
     setIsLoading(true);
     setError(null);
     setStreamingText("");
@@ -36,7 +39,7 @@ export default function App() {
       const res = await fetch(`${API_URL}/api/recipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vibe }),
+        body: JSON.stringify({ vibe, filters }),
         signal: controller.signal,
       });
 
@@ -101,6 +104,8 @@ export default function App() {
 
   const handleRegenerate = () => {
     if (lastVibe.current) {
+      // Restore the filters that were active when this recipe was generated
+      setFilters(lastFilters.current);
       generateRecipe(lastVibe.current);
     }
   };
@@ -114,7 +119,14 @@ export default function App() {
         </p>
       </header>
 
-      <VibeInput onSubmit={generateRecipe} isLoading={isLoading} value={vibe} onChange={setVibe} />
+      <VibeInput
+        onSubmit={generateRecipe}
+        isLoading={isLoading}
+        value={vibe}
+        onChange={setVibe}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
 
       {error && <div className={styles.error} role="alert">{error}</div>}
 
