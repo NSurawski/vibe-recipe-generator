@@ -7,7 +7,7 @@ import RecipeHistory from "./components/RecipeHistory";
 import { useRecipeHistory } from "./hooks/useRecipeHistory";
 import styles from "./App.module.css";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL ?? "";
 const REQUEST_TIMEOUT_MS = 30_000;
 
 export default function App() {
