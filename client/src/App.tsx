@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import type { Recipe, DietaryFilter } from "./types";
+import type { Recipe, Preferences } from "./types";
 import VibeInput from "./components/VibeInput";
 import RecipeCard from "./components/RecipeCard";
 import LoadingState from "./components/LoadingState";
@@ -10,25 +10,25 @@ import styles from "./App.module.css";
 const API_URL = import.meta.env.VITE_API_URL ?? "";
 const REQUEST_TIMEOUT_MS = 30_000;
 
+type Screen = "input" | "loading" | "result";
+
 export default function App() {
+  const [screen, setScreen] = useState<Screen>("input");
   const [recipe, setRecipe] = useState<Recipe | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [streamingText, setStreamingText] = useState("");
-  const [vibe, setVibe] = useState("");
-  const [filters, setFilters] = useState<DietaryFilter[]>([]);
   const lastVibe = useRef("");
-  const lastFilters = useRef<DietaryFilter[]>([]);
+  const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "" });
   const { history, addToHistory, toggleFavorite } = useRecipeHistory();
 
   const isFavorited = recipe
     ? (history.find((e) => e.recipe.title === recipe.title)?.favorited ?? false)
     : false;
 
-  const generateRecipe = async (vibe: string) => {
+  const generateRecipe = async (vibe: string, preferences: Preferences) => {
     lastVibe.current = vibe;
-    lastFilters.current = filters;
-    setIsLoading(true);
+    lastPrefs.current = preferences;
+    setScreen("loading");
     setError(null);
     setStreamingText("");
 
@@ -39,7 +39,7 @@ export default function App() {
       const res = await fetch(`${API_URL}/api/recipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vibe, filters }),
+        body: JSON.stringify({ vibe, preferences }),
         signal: controller.signal,
       });
 
@@ -77,6 +77,7 @@ export default function App() {
               const parsed: Recipe = JSON.parse(cleaned);
               setRecipe(parsed);
               addToHistory(parsed, vibe);
+              setScreen("result");
             } catch {
               throw new Error("Received an unexpected response. Please try again.");
             }
@@ -95,18 +96,20 @@ export default function App() {
       } else {
         setError(err instanceof Error ? err.message : "Failed to generate recipe");
       }
+      setScreen("input");
     } finally {
       clearTimeout(timeout);
-      setIsLoading(false);
       setStreamingText("");
     }
   };
 
+  const handleBack = () => {
+    setScreen("input");
+  };
+
   const handleRegenerate = () => {
     if (lastVibe.current) {
-      // Restore the filters that were active when this recipe was generated
-      setFilters(lastFilters.current);
-      generateRecipe(lastVibe.current);
+      generateRecipe(lastVibe.current, lastPrefs.current);
     }
   };
 
@@ -114,43 +117,39 @@ export default function App() {
     <div className={styles.app}>
       <header className={styles.header}>
         <h1 className={styles.title}>Vibe Recipe Generator</h1>
-        <p className={styles.subtitle}>
-          Describe a mood. Get a recipe that matches.
-        </p>
+        <p className={styles.subtitle}>Tell it a vibe. Get a recipe.</p>
+        <div className={styles.accent} />
       </header>
 
-      <VibeInput
-        onSubmit={generateRecipe}
-        isLoading={isLoading}
-        value={vibe}
-        onChange={setVibe}
-        filters={filters}
-        onFiltersChange={setFilters}
-      />
-
-      {error && <div className={styles.error} role="alert">{error}</div>}
-
-      {isLoading && <LoadingState streamingText={streamingText} />}
-
-      {recipe && !isLoading && (
-        <RecipeCard
-          recipe={recipe}
-          onRegenerate={handleRegenerate}
-          isLoading={isLoading}
-          isFavorited={isFavorited}
-          onToggleFavorite={() => toggleFavorite(recipe.title)}
-        />
-      )}
-
-      {history.length > 0 && !isLoading && (
-        <RecipeHistory
-          history={history}
-          onSelect={(entry) => {
-            setRecipe(entry.recipe);
-            setVibe(entry.vibe);
-          }}
-        />
-      )}
+      <main className={styles.main}>
+        {screen === "input" && (
+          <>
+            {error && <div className={styles.error} role="alert">{error}</div>}
+            <VibeInput onSubmit={generateRecipe} />
+            {history.length > 0 && (
+              <RecipeHistory
+                history={history}
+                onSelect={(entry) => {
+                  setRecipe(entry.recipe);
+                  setScreen("result");
+                }}
+              />
+            )}
+          </>
+        )}
+        {screen === "loading" && (
+          <LoadingState onBack={handleBack} streamingText={streamingText} />
+        )}
+        {screen === "result" && recipe && (
+          <RecipeCard
+            recipe={recipe}
+            onBack={handleBack}
+            onRegenerate={handleRegenerate}
+            isFavorited={isFavorited}
+            onToggleFavorite={() => toggleFavorite(recipe.title)}
+          />
+        )}
+      </main>
     </div>
   );
 }

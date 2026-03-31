@@ -1,88 +1,114 @@
-import { type FormEvent } from "react";
-import type { DietaryFilter } from "../types";
+import { useState, type FormEvent } from "react";
+import type { Preferences } from "../types";
 import styles from "./VibeInput.module.css";
 
 interface VibeInputProps {
-  onSubmit: (vibe: string) => void;
-  isLoading: boolean;
-  value: string;
-  onChange: (value: string) => void;
-  filters: DietaryFilter[];
-  onFiltersChange: (filters: DietaryFilter[]) => void;
+  onSubmit: (vibe: string, preferences: Preferences) => void;
 }
 
-const MAX_LENGTH = 500;
+const QUICK_VIBES = ["Fancy dinner", "Light & fresh", "Spicy kick", "Date night"];
+const DIET_OPTIONS = ["Vegetarian", "Vegan", "GF", "Dairy-free"];
+const TIME_OPTIONS = ["< 30 min", "30–60 min", "1h+"];
+const SKILL_OPTIONS = ["Easy", "Medium", "Hard"];
 
-const FILTERS: { id: DietaryFilter; label: string }[] = [
-  { id: "vegetarian", label: "Vegetarian" },
-  { id: "vegan", label: "Vegan" },
-  { id: "gluten-free", label: "Gluten-free" },
-];
+export default function VibeInput({ onSubmit }: VibeInputProps) {
+  const [vibe, setVibe] = useState("");
+  const [diet, setDiet] = useState<string[]>([]);
+  const [time, setTime] = useState("");
+  const [skill, setSkill] = useState("");
 
-export default function VibeInput({
-  onSubmit,
-  isLoading,
-  value,
-  onChange,
-  filters,
-  onFiltersChange,
-}: VibeInputProps) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (value.trim() && !isLoading) {
-      onSubmit(value.trim());
+    if (vibe.trim()) {
+      onSubmit(vibe.trim(), { diet, time, skill });
     }
   };
 
-  const toggleFilter = (filter: DietaryFilter) => {
-    onFiltersChange(
-      filters.includes(filter)
-        ? filters.filter((f) => f !== filter)
-        : [...filters, filter]
+  const toggleDiet = (option: string) => {
+    setDiet((prev) =>
+      prev.includes(option) ? prev.filter((d) => d !== option) : [...prev, option]
     );
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.container}>
-      <label htmlFor="vibe-input" className={styles.label}>
-        Describe your vibe and we'll cook up something perfect
-      </label>
-      <textarea
-        id="vibe-input"
-        className={styles.textarea}
-        value={value}
-        onChange={(e) => onChange(e.target.value.slice(0, MAX_LENGTH))}
-        placeholder={`"cozy Sunday with rain outside"\n"chaotic brunch energy"\n"impress a date but I can't really cook"`}
-        disabled={isLoading}
+      <h2 className={styles.heading}>What's the vibe?</h2>
+
+      <input
+        className={styles.input}
+        value={vibe}
+        onChange={(e) => setVibe(e.target.value.slice(0, 500))}
+        placeholder="Describe a mood, craving, or occasion"
       />
-      <div
-        className={`${styles.charCount} ${value.length > MAX_LENGTH - 50 ? styles.charCountWarn : ""}`}
-      >
-        {value.length}/{MAX_LENGTH}
+
+      <div className={styles.section}>
+        <p className={styles.sectionLabel}>QUICK VIBES</p>
+        <div className={styles.chips}>
+          {QUICK_VIBES.map((label) => (
+            <button
+              key={label}
+              type="button"
+              className={`${styles.vibeChip} ${vibe === label ? styles.vibeChipActive : ""}`}
+              onClick={() => setVibe(label)}
+            >
+              <span className={styles.vibeChipDot} />
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className={styles.filters} role="group" aria-label="Dietary filters">
-        {FILTERS.map(({ id, label }) => (
-          <label
-            key={id}
-            className={`${styles.filterChip} ${filters.includes(id) ? styles.filterChipActive : ""}`}
-          >
-            <input
-              type="checkbox"
-              className={styles.filterCheckbox}
-              checked={filters.includes(id)}
-              onChange={() => toggleFilter(id)}
-              disabled={isLoading}
-            />
-            {label}
-          </label>
-        ))}
+
+      <div className={styles.section}>
+        <p className={styles.sectionLabel}>PREFERENCES</p>
+        <div className={styles.prefRow}>
+          <span className={styles.prefLabel}>Diet</span>
+          <div className={styles.chips}>
+            {DIET_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`${styles.prefChip} ${diet.includes(option) ? styles.prefChipActive : ""}`}
+                onClick={() => toggleDiet(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={styles.prefRow}>
+          <span className={styles.prefLabel}>Time</span>
+          <div className={styles.chips}>
+            {TIME_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`${styles.prefChip} ${time === option ? styles.prefChipActive : ""}`}
+                onClick={() => setTime(time === option ? "" : option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={styles.prefRow}>
+          <span className={styles.prefLabel}>Skill</span>
+          <div className={styles.chips}>
+            {SKILL_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`${styles.prefChip} ${skill === option ? styles.prefChipActive : ""}`}
+                onClick={() => setSkill(skill === option ? "" : option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-      <button
-        type="submit"
-        className={styles.button}
-        disabled={!value.trim() || isLoading}
-      >
-        {isLoading ? "Conjuring your recipe..." : "Generate Recipe"}
+
+      <button type="submit" className={styles.submitBtn} disabled={!vibe.trim()}>
+        + Generate My Recipe
       </button>
     </form>
   );
