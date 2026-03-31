@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import styles from "./LoadingState.module.css";
 
 const MESSAGES = [
@@ -8,16 +9,23 @@ const MESSAGES = [
   "Consulting the culinary cosmos",
 ];
 
-export default function LoadingState() {
-  const message = MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+interface LoadingStateProps {
+  streamingText?: string;
+}
+
+export default function LoadingState({ streamingText }: LoadingStateProps) {
+  const messageRef = useRef(MESSAGES[Math.floor(Math.random() * MESSAGES.length)]);
 
   return (
     <div className={styles.container}>
       <div className={styles.emoji}>🍳</div>
       <p className={styles.text}>
-        {message}
+        {messageRef.current}
         <span className={styles.dots} />
       </p>
+      {streamingText && (
+        <pre className={styles.stream}>{streamingText}</pre>
+      )}
     </div>
   );
 }

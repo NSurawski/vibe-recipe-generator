@@ -41,8 +41,12 @@ app.post("/api/recipe", async (req, res) => {
     return res.status(400).json({ error: "Vibe description is too long (max 500 characters)" });
   }
 
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
   try {
-    const message = await anthropic.messages.create({
+    const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
       messages: [
@@ -54,21 +58,23 @@ app.post("/api/recipe", async (req, res) => {
       system: RECIPE_PROMPT,
     });
 
-    const text = message.content[0].text;
-    const recipe = JSON.parse(text);
+    for await (const event of stream) {
+      if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
+      }
+    }
 
-    res.json(recipe);
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
   } catch (err) {
     console.error("Recipe generation failed:", err.message);
 
-    if (err.status === 401) {
-      return res.status(401).json({ error: "Invalid API key" });
-    }
-    if (err.status === 429) {
-      return res.status(429).json({ error: "Rate limited — try again in a moment" });
-    }
+    let errorMessage = "Failed to generate recipe. Please try again.";
+    if (err.status === 401) errorMessage = "Invalid API key";
+    else if (err.status === 429) errorMessage = "Rate limited — try again in a moment";
 
-    res.status(500).json({ error: "Failed to generate recipe. Please try again." });
+    res.write(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
+    res.end();
   }
 });
 
