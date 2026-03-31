@@ -1,81 +1,151 @@
 .container {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.label {
-  display: block;
-  font-size: 1.1rem;
-  color: #6b7280;
-  margin-bottom: 0.75rem;
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2C2C2C;
+  margin: 0;
 }
 
-.textarea {
+.input {
   width: 100%;
-  min-height: 120px;
-  padding: 1.25rem;
-  font-size: 1.2rem;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
   font-family: inherit;
-  border: 2px solid #e5e7eb;
-  border-radius: 16px;
-  resize: vertical;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  background: #fafafa;
-  color: #1f2937;
-  line-height: 1.6;
+  border: 1.5px solid #ddd7ce;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2C2C2C;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
 }
 
-.textarea:focus {
+.input:focus {
   outline: none;
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+  border-color: #3B5049;
 }
 
-.textarea::placeholder {
-  color: #9ca3af;
-  font-style: italic;
+.input::placeholder {
+  color: #8A8070;
 }
 
-.button {
-  margin-top: 1.25rem;
-  padding: 0.875rem 2.5rem;
-  font-size: 1.1rem;
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.sectionLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: #8A8070;
+  margin: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.vibeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: 6px;
+  background: #ede8df;
+  color: #2C2C2C;
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.vibeChip:hover {
+  background: #e0dbd2;
+}
+
+.vibeChipActive {
+  background: #C4522A;
+  color: #ffffff;
+}
+
+.vibeChipDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #C4522A;
+  flex-shrink: 0;
+}
+
+.vibeChipActive .vibeChipDot {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.prefRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.prefLabel {
+  font-size: 0.8rem;
+  color: #8A8070;
+  min-width: 2.75rem;
+  flex-shrink: 0;
+}
+
+.prefChip {
+  padding: 0.3rem 0.7rem;
+  border: 1.5px solid #ccc6bc;
+  border-radius: 999px;
+  background: transparent;
+  color: #2C2C2C;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.prefChip:hover {
+  border-color: #3B5049;
+}
+
+.prefChipActive {
+  background: #3B5049;
+  border-color: #3B5049;
+  color: #ffffff;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
   font-weight: 600;
   font-family: inherit;
-  color: white;
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #ffffff;
+  background: #C4522A;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  transition: background 0.15s;
+  margin-top: 0.25rem;
 }
 
-.button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+.submitBtn:hover {
+  background: #b04825;
 }
 
-.button:active {
-  transform: translateY(0);
-}
-
-.button:disabled {
+.submitBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.charCount {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-  color: #9ca3af;
-  text-align: right;
-}
-
-.charCountWarn {
-  color: #ef4444;
 }
 
 .filters {

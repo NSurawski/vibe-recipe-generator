@@ -3,79 +3,81 @@ import styles from "./RecipeCard.module.css";
 
 interface RecipeCardProps {
   recipe: Recipe;
+  onBack: () => void;
   onRegenerate: () => void;
-  isLoading: boolean;
   isFavorited?: boolean;
   onToggleFavorite?: () => void;
 }
 
 export default function RecipeCard({
   recipe,
+  onBack,
   onRegenerate,
-  isLoading,
   isFavorited = false,
   onToggleFavorite,
 }: RecipeCardProps) {
   return (
-    <article className={styles.card} aria-live="polite" aria-atomic="true">
-      <header className={styles.header}>
-        <h2 className={styles.title}>{recipe.title}</h2>
-        <p className={styles.description}>{recipe.description}</p>
-      </header>
+    <div className={styles.container} aria-live="polite" aria-atomic="true">
+      <button className={styles.back} onClick={onBack}>
+        ← Back
+      </button>
+      <h2 className={styles.pageTitle}>Your Recipe</h2>
 
-      <div className={styles.meta}>
-        <span className={styles.badge}>{recipe.time}</span>
-        <span className={styles.badge}>{recipe.difficulty}</span>
-        <span className={styles.badge}>
-          {recipe.ingredients.length} ingredients
-        </span>
+      <div className={styles.headerCard}>
+        <h3 className={styles.title}>{recipe.title}</h3>
+        <p className={styles.meta}>
+          {recipe.time} · {recipe.difficulty}
+          {recipe.servings ? ` · ${recipe.servings}` : ""}
+        </p>
+        {recipe.tags && recipe.tags.length > 0 && (
+          <div className={styles.tags}>
+            {recipe.tags.map((tag, i) => (
+              <span key={i} className={styles.tag}>
+                <span className={styles.tagDot} />
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Ingredients</h3>
+        <h4 className={styles.sectionTitle}>Ingredients</h4>
         <ul className={styles.ingredientList}>
           {recipe.ingredients.map((ing, i) => (
             <li key={i} className={styles.ingredient}>
-              <span className={styles.ingredientAmount}>{ing.amount}</span>{" "}
-              {ing.item}
-              {ing.note && (
-                <span className={styles.ingredientNote}> — {ing.note}</span>
-              )}
+              <span className={styles.bullet} />
+              {ing.amount} {ing.item}
+              {ing.note && <span className={styles.note}> — {ing.note}</span>}
             </li>
           ))}
         </ul>
       </section>
 
       <section className={styles.section}>
-        <h3 className={styles.sectionTitle}>Steps</h3>
+        <h4 className={styles.sectionTitle}>Steps</h4>
         <ol className={styles.stepList}>
           {recipe.steps.map((step, i) => (
             <li key={i} className={styles.step}>
+              <span className={styles.stepNum}>{i + 1}.</span>
               {step}
             </li>
           ))}
         </ol>
       </section>
 
-      <div className={styles.vibeNotes}>{recipe.vibe_notes}</div>
-
-      <div className={styles.actions}>
-        {onToggleFavorite && (
-          <button
-            className={`${styles.saveBtn} ${isFavorited ? styles.saveBtnActive : ""}`}
-            onClick={onToggleFavorite}
-          >
-            {isFavorited ? "★ Saved" : "☆ Save recipe"}
-          </button>
-        )}
+      {onToggleFavorite && (
         <button
-          className={styles.regenerateBtn}
-          onClick={onRegenerate}
-          disabled={isLoading}
+          className={`${styles.saveBtn} ${isFavorited ? styles.saveBtnActive : ""}`}
+          onClick={onToggleFavorite}
         >
-          {isLoading ? "Regenerating..." : "Try a different take"}
+          {isFavorited ? "♥ Saved" : "♥ Save Recipe"}
         </button>
-      </div>
-    </article>
+      )}
+
+      <button className={styles.regenerateBtn} onClick={onRegenerate}>
+        Try a different take
+      </button>
+    </div>
   );
 }

@@ -13,5 +13,13 @@ export interface Recipe {
   steps: string[];
   time: string;
   difficulty: "Easy" | "Medium" | "Hard";
+  servings: string;
+  tags: string[];
   vibe_notes: string;
+}
+
+export interface Preferences {
+  diet: string[];
+  time: string;
+  skill: string;
 }
