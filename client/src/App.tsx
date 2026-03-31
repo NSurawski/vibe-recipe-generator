@@ -15,6 +15,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [streamingText, setStreamingText] = useState("");
+  const [vibe, setVibe] = useState("");
   const lastVibe = useRef("");
   const { history, addToHistory, toggleFavorite } = useRecipeHistory();
 
@@ -113,9 +114,9 @@ export default function App() {
         </p>
       </header>
 
-      <VibeInput onSubmit={generateRecipe} isLoading={isLoading} />
+      <VibeInput onSubmit={generateRecipe} isLoading={isLoading} value={vibe} onChange={setVibe} />
 
-      {error && <div className={styles.error}>{error}</div>}
+      {error && <div className={styles.error} role="alert">{error}</div>}
 
       {isLoading && <LoadingState streamingText={streamingText} />}
 
@@ -132,7 +133,10 @@ export default function App() {
       {history.length > 0 && !isLoading && (
         <RecipeHistory
           history={history}
-          onSelect={(entry) => setRecipe(entry.recipe)}
+          onSelect={(entry) => {
+            setRecipe(entry.recipe);
+            setVibe(entry.vibe);
+          }}
         />
       )}
     </div>

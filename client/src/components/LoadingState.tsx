@@ -17,7 +17,7 @@ export default function LoadingState({ streamingText }: LoadingStateProps) {
   const messageRef = useRef(MESSAGES[Math.floor(Math.random() * MESSAGES.length)]);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} role="status" aria-live="polite" aria-label="Generating recipe">
       <div className={styles.emoji}>🍳</div>
       <p className={styles.text}>
         {messageRef.current}

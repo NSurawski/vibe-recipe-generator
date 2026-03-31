@@ -1,20 +1,20 @@
-import { useState, type FormEvent } from "react";
+import { type FormEvent } from "react";
 import styles from "./VibeInput.module.css";
 
 interface VibeInputProps {
   onSubmit: (vibe: string) => void;
   isLoading: boolean;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 const MAX_LENGTH = 500;
 
-export default function VibeInput({ onSubmit, isLoading }: VibeInputProps) {
-  const [vibe, setVibe] = useState("");
-
+export default function VibeInput({ onSubmit, isLoading, value, onChange }: VibeInputProps) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (vibe.trim() && !isLoading) {
-      onSubmit(vibe.trim());
+    if (value.trim() && !isLoading) {
+      onSubmit(value.trim());
     }
   };
 
@@ -26,20 +26,20 @@ export default function VibeInput({ onSubmit, isLoading }: VibeInputProps) {
       <textarea
         id="vibe-input"
         className={styles.textarea}
-        value={vibe}
-        onChange={(e) => setVibe(e.target.value.slice(0, MAX_LENGTH))}
+        value={value}
+        onChange={(e) => onChange(e.target.value.slice(0, MAX_LENGTH))}
         placeholder={`"cozy Sunday with rain outside"\n"chaotic brunch energy"\n"impress a date but I can't really cook"`}
         disabled={isLoading}
       />
       <div
-        className={`${styles.charCount} ${vibe.length > MAX_LENGTH - 50 ? styles.charCountWarn : ""}`}
+        className={`${styles.charCount} ${value.length > MAX_LENGTH - 50 ? styles.charCountWarn : ""}`}
       >
-        {vibe.length}/{MAX_LENGTH}
+        {value.length}/{MAX_LENGTH}
       </div>
       <button
         type="submit"
         className={styles.button}
-        disabled={!vibe.trim() || isLoading}
+        disabled={!value.trim() || isLoading}
       >
         {isLoading ? "Conjuring your recipe..." : "Generate Recipe"}
       </button>

@@ -89,6 +89,10 @@ app.post("/api/recipe", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Vibe Recipe Server running on http://localhost:${port}`);
-});
+export { app };
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
+    console.log(`Vibe Recipe Server running on http://localhost:${port}`);
+  });
+}

@@ -17,7 +17,7 @@ export default function RecipeCard({
   onToggleFavorite,
 }: RecipeCardProps) {
   return (
-    <article className={styles.card}>
+    <article className={styles.card} aria-live="polite" aria-atomic="true">
       <header className={styles.header}>
         <h2 className={styles.title}>{recipe.title}</h2>
         <p className={styles.description}>{recipe.description}</p>
