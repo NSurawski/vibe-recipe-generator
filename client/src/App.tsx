@@ -12,9 +12,11 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const lastVibe = useRef("");
+  const lastHealthyOnly = useRef(false);
 
-  const generateRecipe = async (vibe: string) => {
+  const generateRecipe = async (vibe: string, healthyOnly: boolean) => {
     lastVibe.current = vibe;
+    lastHealthyOnly.current = healthyOnly;
     setIsLoading(true);
     setError(null);
 
@@ -22,7 +24,7 @@ export default function App() {
       const res = await fetch(`${API_URL}/api/recipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vibe }),
+        body: JSON.stringify({ vibe, healthyOnly }),
       });
 
       if (!res.ok) {
@@ -43,7 +45,7 @@ export default function App() {
 
   const handleRegenerate = () => {
     if (lastVibe.current) {
-      generateRecipe(lastVibe.current);
+      generateRecipe(lastVibe.current, lastHealthyOnly.current);
     }
   };
 

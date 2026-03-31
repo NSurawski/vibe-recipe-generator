@@ -77,3 +77,25 @@
 .charCountWarn {
   color: #ef4444;
 }
+
+.healthyToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.healthyCheckbox {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: #22c55e;
+  cursor: pointer;
+}
+
+.healthyLabel {
+  font-size: 0.95rem;
+  color: #374151;
+  font-weight: 500;
+}

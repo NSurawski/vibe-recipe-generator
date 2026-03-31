@@ -30,8 +30,10 @@ Return ONLY valid JSON matching this exact schema:
 
 Be creative and specific. The recipe should feel intentional — not generic. If someone says "chaotic brunch energy", don't give them plain pancakes. Give them something that feels chaotic and brunch-y.`;
 
+const HEALTHY_ADDENDUM = ` The recipe MUST be healthy: use whole, nutrient-dense ingredients, avoid added sugars and processed foods, keep it balanced with lean proteins, healthy fats, and complex carbohydrates. Do not compromise on matching the vibe — find a healthy way to express it.`;
+
 app.post("/api/recipe", async (req, res) => {
-  const { vibe } = req.body;
+  const { vibe, healthyOnly } = req.body;
 
   if (!vibe || typeof vibe !== "string" || vibe.trim().length === 0) {
     return res.status(400).json({ error: "Please provide a vibe description" });
@@ -42,6 +44,10 @@ app.post("/api/recipe", async (req, res) => {
   }
 
   try {
+    const systemPrompt = healthyOnly === true
+      ? RECIPE_PROMPT + HEALTHY_ADDENDUM
+      : RECIPE_PROMPT;
+
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
@@ -51,7 +57,7 @@ app.post("/api/recipe", async (req, res) => {
           content: `Generate a recipe for this vibe: "${vibe.trim()}"`,
         },
       ],
-      system: RECIPE_PROMPT,
+      system: systemPrompt,
     });
 
     const text = message.content[0].text;

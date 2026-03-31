@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import styles from "./VibeInput.module.css";
 
 interface VibeInputProps {
-  onSubmit: (vibe: string) => void;
+  onSubmit: (vibe: string, healthyOnly: boolean) => void;
   isLoading: boolean;
 }
 
@@ -10,11 +10,12 @@ const MAX_LENGTH = 500;
 
 export default function VibeInput({ onSubmit, isLoading }: VibeInputProps) {
   const [vibe, setVibe] = useState("");
+  const [healthyOnly, setHealthyOnly] = useState(false);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (vibe.trim() && !isLoading) {
-      onSubmit(vibe.trim());
+      onSubmit(vibe.trim(), healthyOnly);
     }
   };
 
@@ -36,6 +37,16 @@ export default function VibeInput({ onSubmit, isLoading }: VibeInputProps) {
       >
         {vibe.length}/{MAX_LENGTH}
       </div>
+      <label className={styles.healthyToggle}>
+        <input
+          type="checkbox"
+          checked={healthyOnly}
+          onChange={(e) => setHealthyOnly(e.target.checked)}
+          disabled={isLoading}
+          className={styles.healthyCheckbox}
+        />
+        <span className={styles.healthyLabel}>Healthy recipes only</span>
+      </label>
       <button
         type="submit"
         className={styles.button}
