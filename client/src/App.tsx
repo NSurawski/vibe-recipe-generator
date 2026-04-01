@@ -19,6 +19,7 @@ export default function App() {
   const [streamingText, setStreamingText] = useState("");
   const lastVibe = useRef("");
   const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "" });
+  const activeController = useRef<AbortController | null>(null);
   const { history, addToHistory, toggleFavorite } = useRecipeHistory();
 
   const isFavorited = recipe
@@ -28,11 +29,17 @@ export default function App() {
   const generateRecipe = async (vibe: string, preferences: Preferences) => {
     lastVibe.current = vibe;
     lastPrefs.current = preferences;
+    // Abort any in-flight request before starting a new one
+    if (activeController.current) {
+      activeController.current.abort();
+    }
+
     setScreen("loading");
     setError(null);
     setStreamingText("");
 
     const controller = new AbortController();
+    activeController.current = controller;
     const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
@@ -69,12 +76,8 @@ export default function App() {
           if (event.error) throw new Error(event.error);
 
           if (event.done) {
-            const cleaned = accumulated
-              .replace(/^```(?:json)?\n?/, "")
-              .replace(/\n?```$/, "")
-              .trim();
             try {
-              const parsed: Recipe = JSON.parse(cleaned);
+              const parsed: Recipe = JSON.parse(accumulated.trim());
               setRecipe(parsed);
               addToHistory(parsed, vibe);
               setScreen("result");
@@ -99,6 +102,9 @@ export default function App() {
       setScreen("input");
     } finally {
       clearTimeout(timeout);
+      if (activeController.current === controller) {
+        activeController.current = null;
+      }
       setStreamingText("");
     }
   };
@@ -124,7 +130,12 @@ export default function App() {
       <main className={styles.main}>
         {screen === "input" && (
           <>
-            {error && <div className={styles.error} role="alert">{error}</div>}
+            {error && (
+              <div className={styles.error} role="alert">
+                <span>{error}</span>
+                <button className={styles.errorDismiss} onClick={() => setError(null)} aria-label="Dismiss error">×</button>
+              </div>
+            )}
             <VibeInput onSubmit={generateRecipe} />
             {history.length > 0 && (
               <RecipeHistory

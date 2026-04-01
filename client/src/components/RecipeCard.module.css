@@ -48,6 +48,14 @@
   margin: 0 0 0.35rem;
 }
 
+.description {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+  font-style: italic;
+}
+
 .meta {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.65);

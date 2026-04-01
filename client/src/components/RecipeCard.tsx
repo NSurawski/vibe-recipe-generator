@@ -25,6 +25,9 @@ export default function RecipeCard({
 
       <div className={styles.headerCard}>
         <h3 className={styles.title}>{recipe.title}</h3>
+        {recipe.description && (
+          <p className={styles.description}>{recipe.description}</p>
+        )}
         <p className={styles.meta}>
           {recipe.time} · {recipe.difficulty}
           {recipe.servings ? ` · ${recipe.servings}` : ""}

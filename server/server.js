@@ -20,9 +20,79 @@ const recipeRateLimit = rateLimit({
 
 app.use("/api/recipe", recipeRateLimit);
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const hasApiKey = !!process.env.ANTHROPIC_API_KEY;
+const anthropic = hasApiKey
+  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  : null;
+
+const DEMO_RECIPES = [
+  {
+    title: "Brown Butter Cardamom French Toast",
+    description: "Warm, nutty brown butter meets aromatic cardamom in this cozy weekend brunch classic that feels like a hug on a plate.",
+    ingredients: [
+      { item: "thick-cut brioche", amount: "2 slices" },
+      { item: "eggs", amount: "2" },
+      { item: "unsalted butter", amount: "3 tbsp", note: "for browning" },
+      { item: "ground cardamom", amount: "1/4 tsp" },
+      { item: "whole milk", amount: "1/4 cup" },
+      { item: "maple syrup", amount: "to serve" },
+    ],
+    steps: [
+      "Melt butter in a skillet over medium heat, swirling until golden brown and nutty — about 3 minutes.",
+      "Whisk eggs, milk, cardamom, and vanilla in a shallow bowl.",
+      "Dip each brioche slice, soaking 15 seconds per side.",
+      "Cook each slice for 3 minutes per side until deeply golden.",
+      "Serve drizzled with brown butter and maple syrup.",
+    ],
+    time: "20 min", difficulty: "Easy", servings: "2 servings",
+    tags: ["Cozy", "Brunch", "Vegetarian", "Quick"],
+    vibe_notes: "The recipe equivalent of wearing your favorite sweater on a rainy morning.",
+  },
+  {
+    title: "Spicy Mango Coconut Noodles",
+    description: "A chaotic, craveable tangle of rice noodles in a sweet-heat mango coconut sauce — messy in the best way.",
+    ingredients: [
+      { item: "rice noodles", amount: "200g" },
+      { item: "coconut milk", amount: "1 can" },
+      { item: "ripe mango", amount: "1, diced" },
+      { item: "sriracha", amount: "2 tbsp" },
+      { item: "lime", amount: "1, juiced" },
+      { item: "cilantro", amount: "handful" },
+    ],
+    steps: [
+      "Cook rice noodles according to package, drain and set aside.",
+      "Blend half the mango with coconut milk and sriracha until smooth.",
+      "Heat the sauce in a pan, toss in noodles, and stir to coat.",
+      "Top with remaining diced mango, cilantro, and a squeeze of lime.",
+    ],
+    time: "15 min", difficulty: "Easy", servings: "2 servings",
+    tags: ["Spicy", "Tropical", "Vegan", "Quick"],
+    vibe_notes: "This is what happens when a beach sunset and a street food cart have a delicious baby.",
+  },
+  {
+    title: "Midnight Mushroom Risotto",
+    description: "A rich, deeply savory risotto for those late-night 'I deserve something fancy' moments.",
+    ingredients: [
+      { item: "arborio rice", amount: "1 cup" },
+      { item: "mixed mushrooms", amount: "300g", note: "sliced" },
+      { item: "shallot", amount: "1, minced" },
+      { item: "white wine", amount: "1/2 cup" },
+      { item: "parmesan", amount: "1/2 cup, grated" },
+      { item: "vegetable broth", amount: "4 cups, warm" },
+      { item: "butter", amount: "2 tbsp" },
+    ],
+    steps: [
+      "Sauté mushrooms in butter until golden, set aside.",
+      "Cook shallot until soft, add rice and toast for 1 minute.",
+      "Pour in wine, stir until absorbed.",
+      "Add broth one ladle at a time, stirring until each is absorbed — about 18 minutes total.",
+      "Fold in mushrooms and parmesan. Season and serve immediately.",
+    ],
+    time: "35 min", difficulty: "Medium", servings: "2 servings",
+    tags: ["Fancy", "Comfort", "Vegetarian", "Date Night"],
+    vibe_notes: "Dim the lights, put on some jazz, and pretend you're in a tiny Italian restaurant at midnight.",
+  },
+];
 
 const RECIPE_PROMPT = `You are a creative chef who generates unique recipes based on vibes and moods. The user will describe a vibe, mood, or feeling, along with optional preferences, and you'll create a recipe that perfectly matches.
 
@@ -64,6 +134,20 @@ app.post("/api/recipe", async (req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
+  // Demo mode — stream a random mock recipe when no API key is configured
+  if (!hasApiKey) {
+    const recipe = DEMO_RECIPES[Math.floor(Math.random() * DEMO_RECIPES.length)];
+    const json = JSON.stringify(recipe);
+    // Simulate streaming by sending chunks
+    for (let i = 0; i < json.length; i += 20) {
+      res.write(`data: ${JSON.stringify({ text: json.slice(i, i + 20) })}\n\n`);
+    }
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
+    console.log(`[DEMO MODE] Served: ${recipe.title}`);
+    return;
+  }
+
   try {
     const stream = anthropic.messages.stream({
       model: "claude-sonnet-4-6",
@@ -102,5 +186,8 @@ export { app };
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () => {
     console.log(`Vibe Recipe Server running on http://localhost:${port}`);
+    if (!hasApiKey) {
+      console.log("⚠ No ANTHROPIC_API_KEY — running in DEMO MODE (mock recipes)");
+    }
   });
 }

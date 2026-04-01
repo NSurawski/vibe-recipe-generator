@@ -13,50 +13,62 @@ const mockRecipe: Recipe = {
   steps: ["Mix everything.", "Cook it."],
   time: "20 minutes",
   difficulty: "Easy",
+  servings: "2 servings",
+  tags: ["Chaotic", "Brunch"],
   vibe_notes: "Pure chaos, pure brunch.",
 };
 
+const noop = () => {};
+
 describe("RecipeCard", () => {
   it("renders recipe title and description", () => {
-    render(<RecipeCard recipe={mockRecipe} onRegenerate={() => {}} isLoading={false} />);
+    render(<RecipeCard recipe={mockRecipe} onBack={noop} onRegenerate={noop} />);
     expect(screen.getByText("Chaos Pancakes")).toBeInTheDocument();
     expect(screen.getByText("A very chaotic brunch.")).toBeInTheDocument();
   });
 
   it("renders all ingredients including optional notes", () => {
-    render(<RecipeCard recipe={mockRecipe} onRegenerate={() => {}} isLoading={false} />);
-    expect(screen.getByText("flour")).toBeInTheDocument();
+    render(<RecipeCard recipe={mockRecipe} onBack={noop} onRegenerate={noop} />);
+    expect(screen.getByText(/1 cup flour/)).toBeInTheDocument();
     expect(screen.getByText(/free range/)).toBeInTheDocument();
   });
 
   it("renders all steps", () => {
-    render(<RecipeCard recipe={mockRecipe} onRegenerate={() => {}} isLoading={false} />);
+    render(<RecipeCard recipe={mockRecipe} onBack={noop} onRegenerate={noop} />);
     expect(screen.getByText("Mix everything.")).toBeInTheDocument();
     expect(screen.getByText("Cook it.")).toBeInTheDocument();
   });
 
-  it("renders metadata badges", () => {
-    render(<RecipeCard recipe={mockRecipe} onRegenerate={() => {}} isLoading={false} />);
-    expect(screen.getByText("20 minutes")).toBeInTheDocument();
-    expect(screen.getByText("Easy")).toBeInTheDocument();
-    expect(screen.getByText("2 ingredients")).toBeInTheDocument();
+  it("renders metadata", () => {
+    render(<RecipeCard recipe={mockRecipe} onBack={noop} onRegenerate={noop} />);
+    expect(screen.getByText(/20 minutes/)).toBeInTheDocument();
+    expect(screen.getByText(/Easy/)).toBeInTheDocument();
+    expect(screen.getByText(/2 servings/)).toBeInTheDocument();
+  });
+
+  it("renders tags", () => {
+    render(<RecipeCard recipe={mockRecipe} onBack={noop} onRegenerate={noop} />);
+    expect(screen.getByText("Chaotic")).toBeInTheDocument();
+    expect(screen.getByText("Brunch")).toBeInTheDocument();
   });
 
   it("calls onRegenerate when button is clicked", () => {
     const onRegenerate = vi.fn();
-    render(<RecipeCard recipe={mockRecipe} onRegenerate={onRegenerate} isLoading={false} />);
+    render(<RecipeCard recipe={mockRecipe} onBack={noop} onRegenerate={onRegenerate} />);
     fireEvent.click(screen.getByText("Try a different take"));
     expect(onRegenerate).toHaveBeenCalledOnce();
   });
 
-  it("disables regenerate button while loading", () => {
-    render(<RecipeCard recipe={mockRecipe} onRegenerate={() => {}} isLoading={true} />);
-    expect(screen.getByRole("button", { name: /regenerating/i })).toBeDisabled();
+  it("calls onBack when back button is clicked", () => {
+    const onBack = vi.fn();
+    render(<RecipeCard recipe={mockRecipe} onBack={onBack} onRegenerate={noop} />);
+    fireEvent.click(screen.getByText("← Back"));
+    expect(onBack).toHaveBeenCalledOnce();
   });
 
   it("does not render save button when onToggleFavorite is not provided", () => {
-    render(<RecipeCard recipe={mockRecipe} onRegenerate={() => {}} isLoading={false} />);
-    expect(screen.queryByText(/save recipe/i)).not.toBeInTheDocument();
+    render(<RecipeCard recipe={mockRecipe} onBack={noop} onRegenerate={noop} />);
+    expect(screen.queryByText(/Save Recipe/)).not.toBeInTheDocument();
   });
 
   it("calls onToggleFavorite when save button is clicked", () => {
@@ -64,13 +76,13 @@ describe("RecipeCard", () => {
     render(
       <RecipeCard
         recipe={mockRecipe}
-        onRegenerate={() => {}}
-        isLoading={false}
+        onBack={noop}
+        onRegenerate={noop}
         isFavorited={false}
         onToggleFavorite={onToggleFavorite}
       />
     );
-    fireEvent.click(screen.getByText("☆ Save recipe"));
+    fireEvent.click(screen.getByText("♥ Save Recipe"));
     expect(onToggleFavorite).toHaveBeenCalledOnce();
   });
 
@@ -78,12 +90,12 @@ describe("RecipeCard", () => {
     render(
       <RecipeCard
         recipe={mockRecipe}
-        onRegenerate={() => {}}
-        isLoading={false}
+        onBack={noop}
+        onRegenerate={noop}
         isFavorited={true}
-        onToggleFavorite={() => {}}
+        onToggleFavorite={noop}
       />
     );
-    expect(screen.getByText("★ Saved")).toBeInTheDocument();
+    expect(screen.getByText("♥ Saved")).toBeInTheDocument();
   });
 });
