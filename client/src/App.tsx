@@ -15,6 +15,7 @@ type Screen = "input" | "loading" | "result";
 export default function App() {
   const [screen, setScreen] = useState<Screen>("input");
   const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [currentEntryId, setCurrentEntryId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [streamingText, setStreamingText] = useState("");
   const lastVibe = useRef("");
@@ -22,8 +23,8 @@ export default function App() {
   const activeController = useRef<AbortController | null>(null);
   const { history, addToHistory, toggleFavorite } = useRecipeHistory();
 
-  const isFavorited = recipe
-    ? (history.find((e) => e.recipe.title === recipe.title)?.favorited ?? false)
+  const isFavorited = currentEntryId
+    ? (history.find((e) => e.id === currentEntryId)?.favorited ?? false)
     : false;
 
   const generateRecipe = async (vibe: string, preferences: Preferences) => {
@@ -79,7 +80,8 @@ export default function App() {
             try {
               const parsed: Recipe = JSON.parse(accumulated.trim());
               setRecipe(parsed);
-              addToHistory(parsed, vibe);
+              const entryId = addToHistory(parsed, vibe);
+              setCurrentEntryId(entryId);
               setScreen("result");
             } catch {
               throw new Error("Received an unexpected response. Please try again.");
@@ -142,6 +144,7 @@ export default function App() {
                 history={history}
                 onSelect={(entry) => {
                   setRecipe(entry.recipe);
+                  setCurrentEntryId(entry.id);
                   setScreen("result");
                 }}
               />
@@ -157,7 +160,7 @@ export default function App() {
             onBack={handleBack}
             onRegenerate={handleRegenerate}
             isFavorited={isFavorited}
-            onToggleFavorite={() => toggleFavorite(recipe.title)}
+            onToggleFavorite={() => currentEntryId && toggleFavorite(currentEntryId)}
           />
         )}
       </main>

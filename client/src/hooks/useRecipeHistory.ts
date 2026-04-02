@@ -5,6 +5,7 @@ const MAX_HISTORY = 10;
 const STORAGE_KEY = "vibe-recipe-history";
 
 export interface HistoryEntry {
+  id: string;
   recipe: Recipe;
   vibe: string;
   savedAt: string;
@@ -18,25 +19,37 @@ function persist(entries: HistoryEntry[]) {
 export function useRecipeHistory() {
   const [history, setHistory] = useState<HistoryEntry[]>(() => {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const entries: HistoryEntry[] = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      // Backfill IDs for entries saved before this change
+      let migrated = false;
+      for (const entry of entries) {
+        if (!entry.id) {
+          entry.id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          migrated = true;
+        }
+      }
+      if (migrated) persist(entries);
+      return entries;
     } catch {
       return [];
     }
   });
 
-  const addToHistory = (recipe: Recipe, vibe: string) => {
-    const entry: HistoryEntry = { recipe, vibe, savedAt: new Date().toISOString() };
+  const addToHistory = (recipe: Recipe, vibe: string): string => {
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const entry: HistoryEntry = { id, recipe, vibe, savedAt: new Date().toISOString() };
     setHistory((prev) => {
       const updated = [entry, ...prev].slice(0, MAX_HISTORY);
       persist(updated);
       return updated;
     });
+    return id;
   };
 
-  const toggleFavorite = (title: string) => {
+  const toggleFavorite = (id: string) => {
     setHistory((prev) => {
       const updated = prev.map((e) =>
-        e.recipe.title === title ? { ...e, favorited: !e.favorited } : e
+        e.id === id ? { ...e, favorited: !e.favorited } : e
       );
       persist(updated);
       return updated;
