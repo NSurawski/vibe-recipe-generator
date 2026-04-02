@@ -39,6 +39,7 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
         value={vibe}
         onChange={(e) => setVibe(e.target.value.slice(0, 500))}
         placeholder="Describe a mood, craving, or occasion"
+        aria-label="Vibe description"
       />
 
       <div className={styles.section}>
