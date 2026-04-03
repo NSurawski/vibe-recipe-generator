@@ -134,7 +134,14 @@ export default function App() {
           <>
             {error && (
               <div className={styles.error} role="alert">
-                <span>{error}</span>
+                <div className={styles.errorContent}>
+                  <span>{error}</span>
+                  {lastVibe.current && (
+                    <button className={styles.retryBtn} onClick={handleRegenerate}>
+                      Try again
+                    </button>
+                  )}
+                </div>
                 <button className={styles.errorDismiss} onClick={() => setError(null)} aria-label="Dismiss error">×</button>
               </div>
             )}
