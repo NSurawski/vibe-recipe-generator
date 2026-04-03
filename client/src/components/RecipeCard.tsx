@@ -69,6 +69,12 @@ export default function RecipeCard({
         </ol>
       </section>
 
+      {recipe.vibe_notes && (
+        <section className={styles.vibeNotes}>
+          <p className={styles.vibeNotesText}>{recipe.vibe_notes}</p>
+        </section>
+      )}
+
       {onToggleFavorite && (
         <button
           className={`${styles.saveBtn} ${isFavorited ? styles.saveBtnActive : ""}`}
