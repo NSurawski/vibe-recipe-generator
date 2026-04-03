@@ -20,6 +20,10 @@ const recipeRateLimit = rateLimit({
 
 app.use("/api/recipe", recipeRateLimit);
 
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", mode: process.env.ANTHROPIC_API_KEY ? "live" : "demo" });
+});
+
 const hasApiKey = !!process.env.ANTHROPIC_API_KEY;
 const anthropic = hasApiKey
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
