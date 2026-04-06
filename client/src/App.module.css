@@ -54,6 +54,13 @@
   gap: 0.5rem;
 }
 
+.retryCountdown {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #991b1b;
+  opacity: 0.75;
+}
+
 .retryBtn {
   background: none;
   border: 1px solid #991b1b;

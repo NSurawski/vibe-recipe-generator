@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { Recipe, Preferences } from "./types";
 import VibeInput from "./components/VibeInput";
 import RecipeCard from "./components/RecipeCard";
@@ -17,6 +17,7 @@ export default function App() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [currentEntryId, setCurrentEntryId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [retryAfter, setRetryAfter] = useState<number | null>(null);
   const [streamingText, setStreamingText] = useState("");
   const lastVibe = useRef("");
   const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "" });
@@ -37,6 +38,7 @@ export default function App() {
 
     setScreen("loading");
     setError(null);
+    setRetryAfter(null);
     setStreamingText("");
 
     const controller = new AbortController();
@@ -53,6 +55,9 @@ export default function App() {
 
       if (!res.ok) {
         const data = await res.json();
+        if (res.status === 429 && data.retryAfter) {
+          setRetryAfter(data.retryAfter);
+        }
         throw new Error(data.error || "Something went wrong");
       }
 
@@ -111,6 +116,36 @@ export default function App() {
     }
   };
 
+  const mainRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    mainRef.current?.focus();
+  }, [screen]);
+
+  useEffect(() => {
+    if (!retryAfter) return;
+    const id = setInterval(() => {
+      setRetryAfter((prev) => {
+        if (prev === null || prev <= 1) {
+          clearInterval(id);
+          return null;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [retryAfter]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && screen !== "input") {
+        handleBack();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [screen]);
+
   const handleBack = () => {
     setScreen("input");
   };
@@ -129,14 +164,19 @@ export default function App() {
         <div className={styles.accent} />
       </header>
 
-      <main className={styles.main}>
+      <main className={styles.main} ref={mainRef} tabIndex={-1} style={{ outline: "none" }}>
         {screen === "input" && (
           <>
             {error && (
               <div className={styles.error} role="alert">
                 <div className={styles.errorContent}>
                   <span>{error}</span>
-                  {lastVibe.current && (
+                  {retryAfter && (
+                    <span className={styles.retryCountdown}>
+                      Retry in {retryAfter}s
+                    </span>
+                  )}
+                  {lastVibe.current && !retryAfter && (
                     <button className={styles.retryBtn} onClick={handleRegenerate}>
                       Try again
                     </button>
