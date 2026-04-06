@@ -15,7 +15,14 @@ const recipeRateLimit = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: "Too many requests — please wait a moment before trying again." },
+  handler: (req, res, _next, options) => {
+    const retryAfter = Math.ceil((req.rateLimit.resetTime - Date.now()) / 1000);
+    res.set("Retry-After", retryAfter);
+    res.status(options.statusCode).json({
+      error: "Too many requests — please wait a moment before trying again.",
+      retryAfter,
+    });
+  },
 });
 
 app.use("/api/recipe", recipeRateLimit);
@@ -188,10 +195,25 @@ app.post("/api/recipe", async (req, res) => {
 export { app };
 
 if (process.env.NODE_ENV !== "test") {
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`Vibe Recipe Server running on http://localhost:${port}`);
     if (!hasApiKey) {
       console.log("⚠ No ANTHROPIC_API_KEY — running in DEMO MODE (mock recipes)");
     }
   });
+
+  const shutdown = (signal) => {
+    console.log(`${signal} received — shutting down gracefully`);
+    server.close(() => {
+      console.log("Server closed");
+      process.exit(0);
+    });
+    setTimeout(() => {
+      console.error("Forced shutdown after timeout");
+      process.exit(1);
+    }, 10_000).unref();
+  };
+
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
