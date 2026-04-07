@@ -52,6 +52,25 @@ git config user.email "nicolesurawski@gmail.com"
 
 Run this at the start of any session before making commits.
 
+## Skills
+
+### Planning (`nimbalyst-planning:planning`)
+
+Use for tracking features, bugs, ideas, and tasks.
+
+- Plans live in `nimbalyst-local/plans/` with YAML frontmatter
+- Trackers live in `nimbalyst-local/tracker/` — `bugs.md`, `tasks.md`, `ideas.md`
+- Use `/plan` to create a new plan, `/track` to log items, `/implement` to execute a plan
+
+### MockupLM (`nimbalyst-mockuplm:mockuplm`)
+
+Use for designing UI before building it.
+
+- Mockup files: `nimbalyst-local/mockups/[name].mockup.html`
+- Existing screen replicas: `nimbalyst-local/existing-screens/`
+- Standalone HTML with inline CSS only — no external dependencies
+- Use `/mockup` to create a new design
+
 ## Conventions
 
 - **CSS Modules:** Each component has a co-located `.module.css` file. Use `styles.className` imports, not global classes.
