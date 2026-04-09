@@ -6,7 +6,20 @@ interface VibeInputProps {
   onSubmit: (vibe: string, preferences: Preferences) => void;
 }
 
-const QUICK_VIBES = ["Fancy dinner", "Light & fresh", "Spicy kick", "Date night"];
+const ALL_VIBES = [
+  "Fancy dinner", "Light & fresh", "Spicy kick", "Date night",
+  "Cozy rainy day", "Summer BBQ", "Midnight snack", "Lazy Sunday brunch",
+  "Post-workout fuel", "Impress the in-laws", "Comfort food vibes",
+  "Something adventurous", "5-ingredient challenge", "Girls' night in",
+  "Hungover but hungry", "Treat yourself",
+];
+
+function pickRandom(arr: string[], n: number): string[] {
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
+
+const QUICK_VIBES = pickRandom(ALL_VIBES, 4);
 const DIET_OPTIONS = ["Vegetarian", "Vegan", "GF", "Dairy-free"];
 const TIME_OPTIONS = ["< 30 min", "30–60 min", "1h+"];
 const SKILL_OPTIONS = ["Easy", "Medium", "Hard"];
