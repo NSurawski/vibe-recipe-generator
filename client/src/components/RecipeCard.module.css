@@ -228,3 +228,64 @@
   background: #3B5049;
   color: #ffffff;
 }
+
+.printBtn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #3B5049;
+  background: transparent;
+  border: 1.5px solid #3B5049;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 0.75rem;
+}
+
+.printBtn:hover {
+  background: #f0f4f2;
+}
+
+@media print {
+  .back,
+  .pageTitle,
+  .saveBtn,
+  .copyBtn,
+  .printBtn,
+  .regenerateBtn {
+    display: none !important;
+  }
+
+  .container {
+    animation: none;
+  }
+
+  .headerCard {
+    background: #ffffff;
+    border: 1.5px solid #3B5049;
+  }
+
+  .title {
+    color: #2C2C2C;
+  }
+
+  .description {
+    color: #5a5247;
+  }
+
+  .meta {
+    color: #8A8070;
+  }
+
+  .tag {
+    background: transparent;
+    border: 1px solid #3B5049;
+    color: #3B5049;
+  }
+
+  .tagDot {
+    background: #3B5049;
+  }
+}

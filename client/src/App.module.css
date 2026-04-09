@@ -95,3 +95,18 @@
 .errorDismiss:hover {
   opacity: 1;
 }
+
+@media print {
+  .header {
+    display: none;
+  }
+
+  .app {
+    background: #ffffff;
+  }
+
+  .main {
+    padding: 1rem;
+    max-width: 100%;
+  }
+}

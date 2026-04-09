@@ -112,6 +112,10 @@ export default function RecipeCard({
         {copied ? "✓ Copied!" : "Copy Recipe"}
       </button>
 
+      <button className={styles.printBtn} onClick={() => window.print()}>
+        Print Recipe
+      </button>
+
       <button className={styles.regenerateBtn} onClick={onRegenerate}>
         Try a different take
       </button>
