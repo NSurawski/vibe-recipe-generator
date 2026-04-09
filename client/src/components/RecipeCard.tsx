@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Recipe } from "../types";
 import styles from "./RecipeCard.module.css";
 
@@ -9,6 +10,20 @@ interface RecipeCardProps {
   onToggleFavorite?: () => void;
 }
 
+function formatRecipeText(recipe: Recipe): string {
+  const lines: string[] = [recipe.title];
+  if (recipe.description) lines.push("", recipe.description);
+  lines.push("", `${recipe.time} · ${recipe.difficulty}${recipe.servings ? ` · ${recipe.servings}` : ""}`);
+  lines.push("", "INGREDIENTS");
+  recipe.ingredients.forEach((ing) => {
+    lines.push(`• ${ing.amount} ${ing.item}${ing.note ? ` — ${ing.note}` : ""}`);
+  });
+  lines.push("", "STEPS");
+  recipe.steps.forEach((step, i) => lines.push(`${i + 1}. ${step}`));
+  if (recipe.vibe_notes) lines.push("", recipe.vibe_notes);
+  return lines.join("\n");
+}
+
 export default function RecipeCard({
   recipe,
   onBack,
@@ -16,6 +31,15 @@ export default function RecipeCard({
   isFavorited = false,
   onToggleFavorite,
 }: RecipeCardProps) {
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(formatRecipeText(recipe)).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
   return (
     <div className={styles.container} aria-live="polite" aria-atomic="true">
       <button className={styles.back} onClick={onBack}>
@@ -83,6 +107,10 @@ export default function RecipeCard({
           {isFavorited ? "♥ Saved" : "♥ Save Recipe"}
         </button>
       )}
+
+      <button className={styles.copyBtn} onClick={handleCopy}>
+        {copied ? "✓ Copied!" : "Copy Recipe"}
+      </button>
 
       <button className={styles.regenerateBtn} onClick={onRegenerate}>
         Try a different take
