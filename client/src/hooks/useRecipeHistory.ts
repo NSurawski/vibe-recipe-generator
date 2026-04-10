@@ -10,6 +10,7 @@ export interface HistoryEntry {
   vibe: string;
   savedAt: string;
   favorited?: boolean;
+  rating?: number;
 }
 
 function persist(entries: HistoryEntry[]) {
@@ -56,5 +57,15 @@ export function useRecipeHistory() {
     });
   };
 
-  return { history, addToHistory, toggleFavorite };
+  const rateRecipe = (id: string, rating: number) => {
+    setHistory((prev) => {
+      const updated = prev.map((e) =>
+        e.id === id ? { ...e, rating } : e
+      );
+      persist(updated);
+      return updated;
+    });
+  };
+
+  return { history, addToHistory, toggleFavorite, rateRecipe };
 }

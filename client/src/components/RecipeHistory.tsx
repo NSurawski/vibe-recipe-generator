@@ -14,6 +14,7 @@ function EntryList({ entries, onSelect }: { entries: HistoryEntry[]; onSelect: (
           <button className={styles.button} onClick={() => onSelect(entry)}>
             <span className={styles.recipeTitle}>{entry.recipe.title}</span>
             <span className={styles.vibe}>"{entry.vibe}"</span>
+            {entry.rating ? <span className={styles.stars}>{"★".repeat(entry.rating)}</span> : null}
           </button>
         </li>
       ))}

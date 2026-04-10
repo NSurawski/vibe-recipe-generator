@@ -22,11 +22,15 @@ export default function App() {
   const lastVibe = useRef("");
   const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "" });
   const activeController = useRef<AbortController | null>(null);
-  const { history, addToHistory, toggleFavorite } = useRecipeHistory();
+  const { history, addToHistory, toggleFavorite, rateRecipe } = useRecipeHistory();
 
   const isFavorited = currentEntryId
     ? (history.find((e) => e.id === currentEntryId)?.favorited ?? false)
     : false;
+
+  const currentRating = currentEntryId
+    ? (history.find((e) => e.id === currentEntryId)?.rating ?? 0)
+    : 0;
 
   const generateRecipe = async (vibe: string, preferences: Preferences) => {
     lastVibe.current = vibe;
@@ -208,6 +212,8 @@ export default function App() {
             onRegenerate={handleRegenerate}
             isFavorited={isFavorited}
             onToggleFavorite={() => currentEntryId && toggleFavorite(currentEntryId)}
+            rating={currentRating}
+            onRate={(r) => currentEntryId && rateRecipe(currentEntryId, r)}
           />
         )}
       </main>
