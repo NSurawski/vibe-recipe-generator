@@ -88,8 +88,11 @@ export default function App() {
           if (event.done) {
             try {
               let jsonText = accumulated.trim();
-              const fenceMatch = jsonText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-              if (fenceMatch) jsonText = fenceMatch[1].trim();
+              const jsonStart = jsonText.indexOf("{");
+              const jsonEnd = jsonText.lastIndexOf("}");
+              if (jsonStart !== -1 && jsonEnd > jsonStart) {
+                jsonText = jsonText.slice(jsonStart, jsonEnd + 1);
+              }
               const parsed: Recipe = JSON.parse(jsonText);
               setRecipe(parsed);
               const entryId = addToHistory(parsed, vibe);
