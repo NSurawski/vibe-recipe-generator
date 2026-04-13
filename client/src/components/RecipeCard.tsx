@@ -72,6 +72,14 @@ export default function RecipeCard({
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const imageSeed = recipe.title.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  const imagePrompt = encodeURIComponent(
+    `${recipe.title}, food photography, professional plating, appetizing, soft natural lighting`
+  );
+  const imageUrl = `https://image.pollinations.ai/prompt/${imagePrompt}?width=640&height=400&nologo=true&seed=${imageSeed}&model=flux`;
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set());
   const baseServings = parseInt(recipe.servings) || 2;
   const [servings, setServings] = useState(baseServings);
@@ -99,6 +107,19 @@ export default function RecipeCard({
         ← Back
       </button>
       <h2 className={styles.pageTitle}>Your Recipe</h2>
+
+      {!imageError && (
+        <div className={`${styles.dishImageWrapper} ${imageLoaded ? styles.dishImageLoaded : ""}`}>
+          {!imageLoaded && <div className={styles.dishImageSkeleton} />}
+          <img
+            src={imageUrl}
+            alt={recipe.title}
+            className={styles.dishImage}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+          />
+        </div>
+      )}
 
       <div className={styles.headerCard}>
         <h3 className={styles.title}>{recipe.title}</h3>
