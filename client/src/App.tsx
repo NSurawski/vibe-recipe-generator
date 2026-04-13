@@ -87,7 +87,10 @@ export default function App() {
 
           if (event.done) {
             try {
-              const parsed: Recipe = JSON.parse(accumulated.trim());
+              let jsonText = accumulated.trim();
+              const fenceMatch = jsonText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+              if (fenceMatch) jsonText = fenceMatch[1].trim();
+              const parsed: Recipe = JSON.parse(jsonText);
               setRecipe(parsed);
               const entryId = addToHistory(parsed, vibe);
               setCurrentEntryId(entryId);
