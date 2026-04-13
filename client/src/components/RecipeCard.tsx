@@ -10,6 +10,7 @@ interface RecipeCardProps {
   onToggleFavorite?: () => void;
   rating?: number;
   onRate?: (rating: number) => void;
+  onShare?: () => void;
 }
 
 function scaleAmount(amount: string, multiplier: number): string {
@@ -67,8 +68,10 @@ export default function RecipeCard({
   onToggleFavorite,
   rating = 0,
   onRate,
+  onShare,
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set());
   const baseServings = parseInt(recipe.servings) || 2;
   const [servings, setServings] = useState(baseServings);
@@ -190,6 +193,19 @@ export default function RecipeCard({
       <button className={styles.copyBtn} onClick={handleCopy}>
         {copied ? "✓ Copied!" : "Copy Recipe"}
       </button>
+
+      {onShare && (
+        <button
+          className={styles.shareBtn}
+          onClick={() => {
+            onShare();
+            setShared(true);
+            setTimeout(() => setShared(false), 2000);
+          }}
+        >
+          {shared ? "✓ Link Copied!" : "Share Recipe"}
+        </button>
+      )}
 
       <button className={styles.printBtn} onClick={() => window.print()}>
         Print Recipe

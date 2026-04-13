@@ -120,6 +120,31 @@ export default function App() {
     }
   };
 
+  // Load recipe from shared URL on first render
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const encoded = params.get("r");
+    if (encoded) {
+      try {
+        const decoded: Recipe = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+        setRecipe(decoded);
+        const entryId = addToHistory(decoded, "shared link");
+        setCurrentEntryId(entryId);
+        setScreen("result");
+        window.history.replaceState({}, "", window.location.pathname);
+      } catch {
+        // Invalid param — ignore
+      }
+    }
+  }, []);
+
+  const handleShare = () => {
+    if (!recipe) return;
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(recipe))));
+    const url = `${window.location.origin}${window.location.pathname}?r=${encoded}`;
+    navigator.clipboard.writeText(url);
+  };
+
   const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -214,6 +239,7 @@ export default function App() {
             onToggleFavorite={() => currentEntryId && toggleFavorite(currentEntryId)}
             rating={currentRating}
             onRate={(r) => currentEntryId && rateRecipe(currentEntryId, r)}
+            onShare={handleShare}
           />
         )}
       </main>

@@ -306,6 +306,25 @@
   color: #ffffff;
 }
 
+.shareBtn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #3B5049;
+  background: transparent;
+  border: 1.5px solid #3B5049;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 0.75rem;
+}
+
+.shareBtn:hover {
+  background: #f0f4f2;
+}
+
 .printBtn {
   width: 100%;
   padding: 0.75rem;
