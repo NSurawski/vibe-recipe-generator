@@ -124,6 +124,88 @@
   color: #ffffff;
 }
 
+.modeTabs {
+  display: flex;
+  gap: 0.4rem;
+  background: #ede8df;
+  border-radius: 10px;
+  padding: 0.3rem;
+}
+
+.modeTab {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  color: #8A8070;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.modeTab:hover {
+  color: #2C2C2C;
+}
+
+.modeTabActive {
+  background: #ffffff;
+  color: #2C2C2C;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ingredientInput {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 1.5px solid #ddd7ce;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2C2C2C;
+  box-sizing: border-box;
+  resize: none;
+  transition: border-color 0.15s;
+  line-height: 1.5;
+}
+
+.ingredientInput:focus {
+  outline: none;
+  border-color: #3B5049;
+}
+
+.ingredientInput::placeholder {
+  color: #8A8070;
+}
+
+.buttonRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+}
+
+.surpriseBtn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #3B5049;
+  background: transparent;
+  border: 1.5px solid #3B5049;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.surpriseBtn:hover {
+  background: #f0f4f2;
+}
+
 .submitBtn {
   width: 100%;
   padding: 1rem;
@@ -136,7 +218,6 @@
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.15s;
-  margin-top: 0.25rem;
 }
 
 .submitBtn:hover {
