@@ -13,6 +13,7 @@ interface RecipeCardProps {
   onShare?: () => void;
   note?: string;
   onNoteChange?: (note: string) => void;
+  onModify?: (modification: string) => void;
 }
 
 function scaleAmount(amount: string, multiplier: number): string {
@@ -73,6 +74,7 @@ export default function RecipeCard({
   onShare,
   note = "",
   onNoteChange,
+  onModify,
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
@@ -89,6 +91,7 @@ export default function RecipeCard({
   const [servings, setServings] = useState(baseServings);
   const multiplier = servings / baseServings;
   const [hoverRating, setHoverRating] = useState(0);
+  const [modification, setModification] = useState("");
 
   function toggleIngredient(index: number) {
     setCheckedIngredients((prev) => {
@@ -248,6 +251,38 @@ export default function RecipeCard({
       <button className={styles.printBtn} onClick={() => window.print()}>
         Print Recipe
       </button>
+
+      {onModify && (
+        <div className={styles.refineSection}>
+          <p className={styles.refineSectionLabel}>REFINE THIS RECIPE</p>
+          <div className={styles.refineRow}>
+            <input
+              className={styles.refineInput}
+              value={modification}
+              onChange={(e) => setModification(e.target.value)}
+              placeholder="make it spicier, swap the protein, make it vegan..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && modification.trim()) {
+                  onModify(modification.trim());
+                  setModification("");
+                }
+              }}
+            />
+            <button
+              className={styles.refineBtn}
+              disabled={!modification.trim()}
+              onClick={() => {
+                if (modification.trim()) {
+                  onModify(modification.trim());
+                  setModification("");
+                }
+              }}
+            >
+              →
+            </button>
+          </div>
+        </div>
+      )}
 
       <button className={styles.regenerateBtn} onClick={onRegenerate}>
         Try a different take

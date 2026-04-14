@@ -192,6 +192,81 @@ app.post("/api/recipe", async (req, res) => {
   }
 });
 
+const MODIFY_PROMPT = `You are a creative chef who modifies existing recipes based on specific requests. Given an original recipe and a modification instruction, return an updated version of the recipe.
+
+Return ONLY valid JSON matching this exact schema:
+{
+  "title": "string — updated recipe name if appropriate",
+  "description": "string — updated 1-2 sentence description",
+  "ingredients": [
+    { "item": "string", "amount": "string", "note": "string (optional)" }
+  ],
+  "steps": ["string — each step as a clear instruction"],
+  "time": "string — total time estimate (e.g. '30 min')",
+  "difficulty": "string — Easy, Medium, or Hard",
+  "servings": "string — e.g. '2 servings'",
+  "tags": ["string — 2-4 short tags"],
+  "vibe_notes": "string — a playful note about the recipe"
+}
+
+Keep the spirit and character of the original. Only change what is necessary to fulfill the modification. Be specific and thoughtful — if asked to make it spicier, add actual chili or heat. If asked to make it vegan, swap every non-vegan ingredient.`;
+
+app.post("/api/modify", async (req, res) => {
+  const { recipe, modification } = req.body;
+
+  if (!modification || typeof modification !== "string" || modification.trim().length === 0) {
+    return res.status(400).json({ error: "Please provide a modification" });
+  }
+  if (!recipe || typeof recipe !== "object") {
+    return res.status(400).json({ error: "Please provide a recipe to modify" });
+  }
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  if (!hasApiKey) {
+    const demo = { ...recipe, title: `${recipe.title} (modified)`, vibe_notes: `Modified: ${modification}` };
+    const json = JSON.stringify(demo);
+    for (let i = 0; i < json.length; i += 20) {
+      res.write(`data: ${JSON.stringify({ text: json.slice(i, i + 20) })}\n\n`);
+    }
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
+    return;
+  }
+
+  try {
+    const stream = anthropic.messages.stream({
+      model: "claude-sonnet-4-6",
+      max_tokens: 4096,
+      messages: [
+        {
+          role: "user",
+          content: `Original recipe:\n${JSON.stringify(recipe, null, 2)}\n\nModification request: ${modification.trim()}`,
+        },
+      ],
+      system: MODIFY_PROMPT,
+    });
+
+    for await (const event of stream) {
+      if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+        res.write(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`);
+      }
+    }
+
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
+  } catch (err) {
+    console.error("Recipe modification failed:", err.message);
+    let errorMessage = "Failed to modify recipe. Please try again.";
+    if (err.status === 401) errorMessage = "Invalid API key";
+    else if (err.status === 429) errorMessage = "Rate limited — try again in a moment";
+    res.write(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
+    res.end();
+  }
+});
+
 export { app };
 
 if (process.env.NODE_ENV !== "test") {

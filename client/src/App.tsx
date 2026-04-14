@@ -221,6 +221,77 @@ export default function App() {
     }
   };
 
+  const handleModify = async (modification: string) => {
+    if (!recipe) return;
+    if (activeController.current) activeController.current.abort();
+
+    setScreen("loading");
+    setError(null);
+    setStreamingText("");
+
+    const controller = new AbortController();
+    activeController.current = controller;
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const res = await fetch(`${API_URL}/api/modify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipe, modification }),
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let accumulated = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          let event: { text?: string; done?: boolean; error?: string };
+          try { event = JSON.parse(line.slice(6)); } catch { continue; }
+          if (event.error) throw new Error(event.error);
+          if (event.done) {
+            try {
+              let jsonText = accumulated.trim();
+              const jsonStart = jsonText.indexOf("{");
+              const jsonEnd = jsonText.lastIndexOf("}");
+              if (jsonStart !== -1 && jsonEnd > jsonStart) jsonText = jsonText.slice(jsonStart, jsonEnd + 1);
+              const parsed: Recipe = JSON.parse(jsonText);
+              setRecipe(parsed);
+              const entryId = addToHistory(parsed, modification);
+              setCurrentEntryId(entryId);
+              setScreen("result");
+            } catch {
+              throw new Error("Received an unexpected response. Please try again.");
+            }
+            return;
+          }
+          if (event.text) { accumulated += event.text; setStreamingText(accumulated); }
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        setError("Request timed out — please try again.");
+      } else {
+        setError(err instanceof Error ? err.message : "Failed to modify recipe");
+      }
+      setScreen("input");
+    } finally {
+      clearTimeout(timeout);
+      if (activeController.current === controller) activeController.current = null;
+      setStreamingText("");
+    }
+  };
+
   return (
     <div className={styles.app}>
       <header className={styles.header}>
@@ -282,6 +353,7 @@ export default function App() {
             onShare={handleShare}
             note={currentNote}
             onNoteChange={(n) => currentEntryId && updateNote(currentEntryId, n)}
+            onModify={handleModify}
           />
         )}
       </main>

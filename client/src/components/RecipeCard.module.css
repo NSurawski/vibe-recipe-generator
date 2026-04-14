@@ -365,6 +365,66 @@
   background: #f0f4f2;
 }
 
+.refineSection {
+  margin-bottom: 0.75rem;
+}
+
+.refineSectionLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: #8A8070;
+  margin: 0 0 0.5rem;
+}
+
+.refineRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.refineInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  border: 1.5px solid #ddd7ce;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2C2C2C;
+  transition: border-color 0.15s;
+}
+
+.refineInput:focus {
+  outline: none;
+  border-color: #3B5049;
+}
+
+.refineInput::placeholder {
+  color: #b0a898;
+}
+
+.refineBtn {
+  padding: 0.75rem 1.1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #3B5049;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.refineBtn:hover {
+  background: #2e3f38;
+}
+
+.refineBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .regenerateBtn {
   width: 100%;
   padding: 0.75rem;
