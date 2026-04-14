@@ -11,6 +11,8 @@ interface RecipeCardProps {
   rating?: number;
   onRate?: (rating: number) => void;
   onShare?: () => void;
+  note?: string;
+  onNoteChange?: (note: string) => void;
 }
 
 function scaleAmount(amount: string, multiplier: number): string {
@@ -69,6 +71,8 @@ export default function RecipeCard({
   rating = 0,
   onRate,
   onShare,
+  note = "",
+  onNoteChange,
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
@@ -182,6 +186,19 @@ export default function RecipeCard({
       {recipe.vibe_notes && (
         <section className={styles.vibeNotes}>
           <p className={styles.vibeNotesText}>{recipe.vibe_notes}</p>
+        </section>
+      )}
+
+      {onNoteChange && (
+        <section className={styles.noteSection}>
+          <p className={styles.noteSectionLabel}>YOUR TWIST</p>
+          <textarea
+            className={styles.noteInput}
+            value={note}
+            onChange={(e) => onNoteChange(e.target.value)}
+            placeholder="What did you change or add?"
+            rows={2}
+          />
         </section>
       )}
 

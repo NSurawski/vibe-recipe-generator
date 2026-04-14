@@ -11,6 +11,7 @@ export interface HistoryEntry {
   savedAt: string;
   favorited?: boolean;
   rating?: number;
+  note?: string;
 }
 
 function persist(entries: HistoryEntry[]) {
@@ -67,5 +68,13 @@ export function useRecipeHistory() {
     });
   };
 
-  return { history, addToHistory, toggleFavorite, rateRecipe };
+  const updateNote = (id: string, note: string) => {
+    setHistory((prev) => {
+      const updated = prev.map((e) => e.id === id ? { ...e, note } : e);
+      persist(updated);
+      return updated;
+    });
+  };
+
+  return { history, addToHistory, toggleFavorite, rateRecipe, updateNote };
 }

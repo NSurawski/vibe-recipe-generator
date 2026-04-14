@@ -145,6 +145,42 @@
   white-space: nowrap;
 }
 
+.noteSection {
+  margin-bottom: 1.25rem;
+}
+
+.noteSectionLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: #8A8070;
+  margin: 0 0 0.5rem;
+}
+
+.noteInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  border: 1.5px solid #ddd7ce;
+  border-radius: 10px;
+  background: #faf7f2;
+  color: #2C2C2C;
+  box-sizing: border-box;
+  resize: none;
+  transition: border-color 0.15s;
+  line-height: 1.5;
+}
+
+.noteInput:focus {
+  outline: none;
+  border-color: #C4522A;
+}
+
+.noteInput::placeholder {
+  color: #b0a898;
+}
+
 .ratingRow {
   display: flex;
   gap: 0.2rem;

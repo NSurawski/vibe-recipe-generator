@@ -4,6 +4,7 @@ import VibeInput from "./components/VibeInput";
 import RecipeCard from "./components/RecipeCard";
 import LoadingState from "./components/LoadingState";
 import RecipeHistory from "./components/RecipeHistory";
+import RecipeOfTheDay from "./components/RecipeOfTheDay";
 import { useRecipeHistory } from "./hooks/useRecipeHistory";
 import styles from "./App.module.css";
 
@@ -22,7 +23,8 @@ export default function App() {
   const lastVibe = useRef("");
   const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "" });
   const activeController = useRef<AbortController | null>(null);
-  const { history, addToHistory, toggleFavorite, rateRecipe } = useRecipeHistory();
+  const { history, addToHistory, toggleFavorite, rateRecipe, updateNote } = useRecipeHistory();
+  const isDailyRecipeRef = useRef(false);
 
   const isFavorited = currentEntryId
     ? (history.find((e) => e.id === currentEntryId)?.favorited ?? false)
@@ -31,6 +33,10 @@ export default function App() {
   const currentRating = currentEntryId
     ? (history.find((e) => e.id === currentEntryId)?.rating ?? 0)
     : 0;
+
+  const currentNote = currentEntryId
+    ? (history.find((e) => e.id === currentEntryId)?.note ?? "")
+    : "";
 
   const generateRecipe = async (vibe: string, preferences: Preferences) => {
     lastVibe.current = vibe;
@@ -98,6 +104,11 @@ export default function App() {
               const entryId = addToHistory(parsed, vibe);
               setCurrentEntryId(entryId);
               setScreen("result");
+              if (isDailyRecipeRef.current) {
+                const today = new Date().toISOString().slice(0, 10);
+                localStorage.setItem("recipe-of-day", JSON.stringify({ date: today, recipe: parsed }));
+                isDailyRecipeRef.current = false;
+              }
             } catch {
               throw new Error("Received an unexpected response. Please try again.");
             }
@@ -144,11 +155,30 @@ export default function App() {
     }
   }, []);
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!recipe) return;
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(recipe))));
     const url = `${window.location.origin}${window.location.pathname}?r=${encoded}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: recipe.title, text: recipe.description, url });
+        return;
+      } catch {
+        // User cancelled or API unavailable — fall through to clipboard
+      }
+    }
     navigator.clipboard.writeText(url);
+  };
+
+  const DAILY_VIBES = [
+    "cozy morning at home", "fresh and light to start the day", "easy comforting weeknight",
+    "something a bit indulgent", "healthy and vibrant", "warm and satisfying",
+  ];
+
+  const handleGenerateDaily = () => {
+    const vibe = DAILY_VIBES[Math.floor(Math.random() * DAILY_VIBES.length)];
+    isDailyRecipeRef.current = true;
+    generateRecipe(vibe, { diet: [], time: "", skill: "" });
   };
 
   const mainRef = useRef<HTMLElement>(null);
@@ -220,6 +250,10 @@ export default function App() {
                 <button className={styles.errorDismiss} onClick={() => setError(null)} aria-label="Dismiss error">×</button>
               </div>
             )}
+            <RecipeOfTheDay
+              onSelect={(r) => { setRecipe(r); setScreen("result"); setCurrentEntryId(null); }}
+              onGenerate={handleGenerateDaily}
+            />
             <VibeInput onSubmit={generateRecipe} />
             {history.length > 0 && (
               <RecipeHistory
@@ -246,6 +280,8 @@ export default function App() {
             rating={currentRating}
             onRate={(r) => currentEntryId && rateRecipe(currentEntryId, r)}
             onShare={handleShare}
+            note={currentNote}
+            onNoteChange={(n) => currentEntryId && updateNote(currentEntryId, n)}
           />
         )}
       </main>
