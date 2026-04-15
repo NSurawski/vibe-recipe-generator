@@ -3,6 +3,47 @@
   background: #F5EFE6;
 }
 
+.screenEnter {
+  animation: screenFadeIn 0.25s ease;
+}
+
+@keyframes screenFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.onboarding {
+  background: #faf7f2;
+  border: 1px solid #e8e0d5;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.onboardingText {
+  font-size: 0.88rem;
+  color: #5a5247;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.onboardingDismiss {
+  background: none;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #C4522A;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
 .header {
   background: #3B5049;
   padding: 2rem 1.5rem 0;

@@ -5,6 +5,7 @@ import RecipeCard from "./components/RecipeCard";
 import LoadingState from "./components/LoadingState";
 import RecipeHistory from "./components/RecipeHistory";
 import RecipeOfTheDay from "./components/RecipeOfTheDay";
+import EmptyHistory from "./components/EmptyHistory";
 import { useRecipeHistory } from "./hooks/useRecipeHistory";
 import styles from "./App.module.css";
 
@@ -25,6 +26,7 @@ export default function App() {
   const activeController = useRef<AbortController | null>(null);
   const { history, addToHistory, toggleFavorite, rateRecipe, updateNote } = useRecipeHistory();
   const isDailyRecipeRef = useRef(false);
+  const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("onboarding-seen"));
 
   const isFavorited = currentEntryId
     ? (history.find((e) => e.id === currentEntryId)?.favorited ?? false)
@@ -302,7 +304,20 @@ export default function App() {
 
       <main className={styles.main} ref={mainRef} tabIndex={-1} style={{ outline: "none" }}>
         {screen === "input" && (
-          <>
+          <div className={styles.screenEnter}>
+            {showOnboarding && (
+              <div className={styles.onboarding}>
+                <p className={styles.onboardingText}>
+                  <strong>Welcome!</strong> Describe a mood, craving, or occasion — and Claude will generate a unique recipe that matches your vibe. Try "cozy rainy day" or "impress the in-laws".
+                </p>
+                <button
+                  className={styles.onboardingDismiss}
+                  onClick={() => { localStorage.setItem("onboarding-seen", "true"); setShowOnboarding(false); }}
+                >
+                  Got it ✓
+                </button>
+              </div>
+            )}
             {error && (
               <div className={styles.error} role="alert">
                 <div className={styles.errorContent}>
@@ -326,7 +341,7 @@ export default function App() {
               onGenerate={handleGenerateDaily}
             />
             <VibeInput onSubmit={generateRecipe} />
-            {history.length > 0 && (
+            {history.length > 0 ? (
               <RecipeHistory
                 history={history}
                 onSelect={(entry) => {
@@ -335,11 +350,15 @@ export default function App() {
                   setScreen("result");
                 }}
               />
+            ) : (
+              <EmptyHistory onGenerate={(vibe) => generateRecipe(vibe, { diet: [], time: "", skill: "" })} />
             )}
-          </>
+          </div>
         )}
         {screen === "loading" && (
-          <LoadingState onBack={handleBack} streamingText={streamingText} />
+          <div className={styles.screenEnter}>
+            <LoadingState onBack={handleBack} streamingText={streamingText} />
+          </div>
         )}
         {screen === "result" && recipe && (
           <RecipeCard

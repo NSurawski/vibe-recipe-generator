@@ -1,0 +1,49 @@
+.container {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #ede8df;
+}
+
+.label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #8A8070;
+  margin: 0 0 0.4rem;
+}
+
+.text {
+  font-size: 0.88rem;
+  color: #5a5247;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.vibes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vibeBtn {
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.85rem;
+  background: #faf7f2;
+  border: 1px solid #ede8df;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: #3B5049;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.vibeBtn:hover {
+  background: #f0ebe2;
+  border-color: #C4522A;
+  color: #C4522A;
+}
