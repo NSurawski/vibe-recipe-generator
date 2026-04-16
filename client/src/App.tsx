@@ -27,6 +27,7 @@ export default function App() {
   const { history, addToHistory, toggleFavorite, rateRecipe, updateNote } = useRecipeHistory();
   const isDailyRecipeRef = useRef(false);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("onboarding-seen"));
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("dark-mode") === "true");
 
   const isFavorited = currentEntryId
     ? (history.find((e) => e.id === currentEntryId)?.favorited ?? false)
@@ -295,10 +296,25 @@ export default function App() {
   };
 
   return (
-    <div className={styles.app}>
+    <div className={styles.app} data-theme={darkMode ? "dark" : "light"}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Vibe Recipe Generator</h1>
-        <p className={styles.subtitle}>Tell it a vibe. Get a recipe.</p>
+        <div className={styles.headerRow}>
+          <div>
+            <h1 className={styles.title}>Vibe Recipe Generator</h1>
+            <p className={styles.subtitle}>Tell it a vibe. Get a recipe.</p>
+          </div>
+          <button
+            className={styles.themeToggle}
+            onClick={() => {
+              const next = !darkMode;
+              setDarkMode(next);
+              localStorage.setItem("dark-mode", String(next));
+            }}
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? "☀️" : "🌙"}
+          </button>
+        </div>
         <div className={styles.accent} />
       </header>
 

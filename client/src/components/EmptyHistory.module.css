@@ -1,22 +1,22 @@
 .container {
   margin-top: 2rem;
   padding: 1.25rem;
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 14px;
-  border: 1px solid #ede8df;
+  border: 1px solid var(--bd-subtle);
 }
 
 .label {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #8A8070;
+  color: var(--tx-2);
   margin: 0 0 0.4rem;
 }
 
 .text {
   font-size: 0.88rem;
-  color: #5a5247;
+  color: var(--tx-3);
   margin: 0 0 1rem;
   line-height: 1.5;
 }
@@ -31,19 +31,19 @@
   width: 100%;
   text-align: left;
   padding: 0.6rem 0.85rem;
-  background: #faf7f2;
-  border: 1px solid #ede8df;
+  background: var(--bg-card-warm);
+  border: 1px solid var(--bd-subtle);
   border-radius: 8px;
   font-family: inherit;
   font-size: 0.88rem;
-  color: #3B5049;
+  color: var(--clr-btn);
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
 
 .vibeBtn:hover {
-  background: #f0ebe2;
-  border-color: #C4522A;
-  color: #C4522A;
+  background: var(--bg-chip-hover);
+  border-color: var(--clr-accent);
+  color: var(--clr-accent);
 }

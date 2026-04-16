@@ -2,7 +2,7 @@
   max-width: 700px;
   margin: 2rem auto 0;
   padding: 1.5rem 2rem;
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 }
@@ -10,7 +10,7 @@
 .heading {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--history-tx2);
   margin: 0 0 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -32,8 +32,8 @@
   flex-wrap: wrap;
   gap: 0.35rem 0.65rem;
   padding: 0.6rem 0.85rem;
-  background: #f9fafb;
-  border: 1px solid #f3f4f6;
+  background: var(--history-btn-bg);
+  border: 1px solid var(--bd-card);
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
@@ -42,21 +42,21 @@
 }
 
 .button:hover {
-  background: #fef3c7;
-  border-color: #f59e0b;
+  background: var(--history-hover-bg);
+  border-color: var(--history-hover-bd);
 }
 
 .recipeTitle {
   font-size: 0.92rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--history-tx1);
   flex-shrink: 1;
   min-width: 0;
 }
 
 .vibe {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--history-tx2);
   font-style: italic;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -65,7 +65,7 @@
 
 .divider {
   border: none;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--bd-card);
   margin: 1rem 0;
 }
 

@@ -1,6 +1,6 @@
 .app {
   min-height: 100vh;
-  background: #F5EFE6;
+  background: var(--bg-page);
 }
 
 .screenEnter {
@@ -13,8 +13,8 @@
 }
 
 .onboarding {
-  background: #faf7f2;
-  border: 1px solid #e8e0d5;
+  background: var(--bg-card-warm);
+  border: 1px solid var(--bd-subtle);
   border-radius: 12px;
   padding: 1rem 1.1rem;
   margin-bottom: 1rem;
@@ -26,7 +26,7 @@
 
 .onboardingText {
   font-size: 0.88rem;
-  color: #5a5247;
+  color: var(--tx-3);
   line-height: 1.55;
   margin: 0;
 }
@@ -36,7 +36,7 @@
   border: none;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #C4522A;
+  color: var(--clr-accent);
   cursor: pointer;
   padding: 0;
   white-space: nowrap;
@@ -45,7 +45,7 @@
 }
 
 .header {
-  background: #3B5049;
+  background: var(--clr-header-bg);
   padding: 2rem 1.5rem 0;
 }
 
@@ -65,7 +65,7 @@
 
 .accent {
   height: 4px;
-  background: #C4522A;
+  background: var(--clr-accent);
   margin: 1.5rem -1.5rem 0;
 }
 
@@ -81,10 +81,10 @@
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--error-bg);
+  border: 1px solid var(--error-bd);
   border-radius: 10px;
-  color: #991b1b;
+  color: var(--error-tx);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
@@ -98,15 +98,15 @@
 .retryCountdown {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #991b1b;
+  color: var(--error-tx);
   opacity: 0.75;
 }
 
 .retryBtn {
   background: none;
-  border: 1px solid #991b1b;
+  border: 1px solid var(--error-tx);
   border-radius: 6px;
-  color: #991b1b;
+  color: var(--error-tx);
   font-size: 0.8rem;
   font-weight: 600;
   font-family: inherit;
@@ -117,14 +117,14 @@
 }
 
 .retryBtn:hover {
-  background: #991b1b;
+  background: var(--error-tx);
   color: #ffffff;
 }
 
 .errorDismiss {
   background: none;
   border: none;
-  color: #991b1b;
+  color: var(--error-tx);
   font-size: 1.1rem;
   cursor: pointer;
   padding: 0 0 0 0.75rem;
@@ -150,4 +150,25 @@
     padding: 1rem;
     max-width: 100%;
   }
+}
+
+.themeToggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.25rem;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+
+.themeToggle:hover {
+  opacity: 1;
+}
+
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }

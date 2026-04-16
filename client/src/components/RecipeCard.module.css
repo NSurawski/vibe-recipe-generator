@@ -18,7 +18,7 @@
 .back {
   background: none;
   border: none;
-  color: #C4522A;
+  color: var(--clr-accent);
   font-size: 0.9rem;
   font-family: inherit;
   cursor: pointer;
@@ -30,7 +30,7 @@
 .pageTitle {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #2C2C2C;
+  color: var(--tx-1);
   margin: 0 0 1rem;
 }
 
@@ -39,7 +39,7 @@
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 1rem;
-  background: #e8e0d5;
+  background: var(--skeleton);
   aspect-ratio: 16 / 10;
   position: relative;
 }
@@ -47,7 +47,7 @@
 .dishImageSkeleton {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, #e8e0d5 25%, #f0e8de 50%, #e8e0d5 75%);
+  background: linear-gradient(90deg, var(--skeleton) 25%, var(--bg-card-warm) 50%, var(--skeleton) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -77,7 +77,7 @@
 }
 
 .headerCard {
-  background: #3B5049;
+  background: var(--clr-header-bg);
   border-radius: 10px;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
@@ -153,7 +153,7 @@
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.09em;
-  color: #8A8070;
+  color: var(--tx-2);
   margin: 0 0 0.5rem;
 }
 
@@ -162,10 +162,10 @@
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   font-family: inherit;
-  border: 1.5px solid #ddd7ce;
+  border: 1.5px solid var(--bd-input);
   border-radius: 10px;
-  background: #faf7f2;
-  color: #2C2C2C;
+  background: var(--bg-card-warm);
+  color: var(--tx-1);
   box-sizing: border-box;
   resize: none;
   transition: border-color 0.15s;
@@ -174,11 +174,11 @@
 
 .noteInput:focus {
   outline: none;
-  border-color: #C4522A;
+  border-color: var(--clr-accent);
 }
 
 .noteInput::placeholder {
-  color: #b0a898;
+  color: var(--tx-2);
 }
 
 .ratingRow {
@@ -193,7 +193,7 @@
   background: none;
   border: none;
   font-size: 1.6rem;
-  color: #d1d5db;
+  color: var(--star-empty);
   cursor: pointer;
   padding: 0;
   line-height: 1;
@@ -230,7 +230,7 @@
   width: 8px;
   height: 8px;
   border-radius: 2px;
-  background: #C4522A;
+  background: var(--clr-accent);
   flex-shrink: 0;
 }
 
@@ -241,7 +241,7 @@
 .sectionTitle {
   font-size: 1rem;
   font-weight: 600;
-  color: #2C2C2C;
+  color: var(--tx-1);
   margin: 0 0 0.6rem;
 }
 
@@ -259,7 +259,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: #2C2C2C;
+  color: var(--tx-1);
   cursor: pointer;
   user-select: none;
   transition: opacity 0.15s;
@@ -274,12 +274,12 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #C4522A;
+  background: var(--clr-accent);
   flex-shrink: 0;
 }
 
 .note {
-  color: #8A8070;
+  color: var(--tx-2);
   font-style: italic;
   font-size: 0.85rem;
 }
@@ -297,7 +297,7 @@
   display: flex;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: #2C2C2C;
+  color: var(--tx-1);
   line-height: 1.5;
 }
 
@@ -307,8 +307,8 @@
 }
 
 .vibeNotes {
-  background: #faf7f2;
-  border-left: 3px solid #C4522A;
+  background: var(--bg-card-warm);
+  border-left: 3px solid var(--clr-accent);
   border-radius: 0 8px 8px 0;
   padding: 0.85rem 1rem;
   margin-bottom: 1.25rem;
@@ -316,7 +316,7 @@
 
 .vibeNotesText {
   font-size: 0.88rem;
-  color: #5a5247;
+  color: var(--tx-3);
   line-height: 1.5;
   font-style: italic;
   margin: 0;
@@ -329,7 +329,7 @@
   font-weight: 600;
   font-family: inherit;
   color: #ffffff;
-  background: #C4522A;
+  background: var(--clr-accent);
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -339,11 +339,11 @@
 }
 
 .saveBtn:hover {
-  background: #b04825;
+  background: var(--clr-accent-hover);
 }
 
 .saveBtnActive {
-  background: #8c3419;
+  background: var(--clr-accent-deep);
 }
 
 .copyBtn {
@@ -352,9 +352,9 @@
   font-size: 0.9rem;
   font-weight: 500;
   font-family: inherit;
-  color: #3B5049;
+  color: var(--clr-btn);
   background: transparent;
-  border: 1.5px solid #3B5049;
+  border: 1.5px solid var(--clr-btn);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
@@ -362,7 +362,7 @@
 }
 
 .copyBtn:hover {
-  background: #f0f4f2;
+  background: var(--clr-btn-hover);
 }
 
 .refineSection {
@@ -373,7 +373,7 @@
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.09em;
-  color: #8A8070;
+  color: var(--tx-2);
   margin: 0 0 0.5rem;
 }
 
@@ -387,27 +387,27 @@
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   font-family: inherit;
-  border: 1.5px solid #ddd7ce;
+  border: 1.5px solid var(--bd-input);
   border-radius: 10px;
-  background: #ffffff;
-  color: #2C2C2C;
+  background: var(--bg-card);
+  color: var(--tx-1);
   transition: border-color 0.15s;
 }
 
 .refineInput:focus {
   outline: none;
-  border-color: #3B5049;
+  border-color: var(--clr-btn);
 }
 
 .refineInput::placeholder {
-  color: #b0a898;
+  color: var(--tx-2);
 }
 
 .refineBtn {
   padding: 0.75rem 1.1rem;
   font-size: 1rem;
   font-family: inherit;
-  background: #3B5049;
+  background: var(--clr-btn);
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -431,16 +431,16 @@
   font-size: 0.9rem;
   font-weight: 500;
   font-family: inherit;
-  color: #3B5049;
+  color: var(--clr-btn);
   background: transparent;
-  border: 1.5px solid #3B5049;
+  border: 1.5px solid var(--clr-btn);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
 }
 
 .regenerateBtn:hover {
-  background: #3B5049;
+  background: var(--clr-btn);
   color: #ffffff;
 }
 
@@ -450,9 +450,9 @@
   font-size: 0.9rem;
   font-weight: 500;
   font-family: inherit;
-  color: #3B5049;
+  color: var(--clr-btn);
   background: transparent;
-  border: 1.5px solid #3B5049;
+  border: 1.5px solid var(--clr-btn);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
@@ -460,7 +460,7 @@
 }
 
 .shareBtn:hover {
-  background: #f0f4f2;
+  background: var(--clr-btn-hover);
 }
 
 .printBtn {
@@ -469,9 +469,9 @@
   font-size: 0.9rem;
   font-weight: 500;
   font-family: inherit;
-  color: #3B5049;
+  color: var(--clr-btn);
   background: transparent;
-  border: 1.5px solid #3B5049;
+  border: 1.5px solid var(--clr-btn);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.15s;
@@ -479,7 +479,7 @@
 }
 
 .printBtn:hover {
-  background: #f0f4f2;
+  background: var(--clr-btn-hover);
 }
 
 @media print {
