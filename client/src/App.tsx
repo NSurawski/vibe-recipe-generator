@@ -300,7 +300,10 @@ export default function App() {
       <header className={styles.header}>
         <div className={styles.headerRow}>
           <div>
-            <h1 className={styles.title}>Vibe Recipe Generator</h1>
+            <div className={styles.logoRow}>
+              <span className={styles.logoIcon}>🥘</span>
+              <h1 className={styles.title}>Vibe Recipe</h1>
+            </div>
             <p className={styles.subtitle}>Tell it a vibe. Get a recipe.</p>
           </div>
           <button
