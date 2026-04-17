@@ -262,12 +262,27 @@
   color: var(--tx-1);
   cursor: pointer;
   user-select: none;
-  transition: opacity 0.15s;
+  position: relative;
+  transition: opacity 0.3s;
+}
+
+.ingredient::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  width: 0;
+  height: 1.5px;
+  background: var(--tx-2);
+  transition: width 0.25s ease;
 }
 
 .ingredientChecked {
-  opacity: 0.4;
-  text-decoration: line-through;
+  opacity: 0.45;
+}
+
+.ingredientChecked::after {
+  width: calc(100% - 1rem);
 }
 
 .bullet {

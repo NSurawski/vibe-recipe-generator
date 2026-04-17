@@ -36,7 +36,7 @@
   border: 1px solid var(--bd-card);
   border-radius: 10px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
   text-align: left;
   font-family: inherit;
 }
@@ -44,6 +44,7 @@
 .button:hover {
   background: var(--history-hover-bg);
   border-color: var(--history-hover-bd);
+  transform: translateX(3px);
 }
 
 .recipeTitle {
