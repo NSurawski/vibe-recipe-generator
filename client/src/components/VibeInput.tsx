@@ -59,6 +59,7 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
       <h2 className={styles.heading}>What's the vibe?</h2>
 
       <div className={styles.modeTabs}>
+        <div className={`${styles.tabIndicator} ${mode === "ingredients" ? styles.tabIndicatorRight : ""}`} />
         <button
           type="button"
           className={`${styles.modeTab} ${mode === "vibe" ? styles.modeTabActive : ""}`}
@@ -76,13 +77,20 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
       </div>
 
       {mode === "vibe" ? (
-        <input
-          className={styles.input}
-          value={vibe}
-          onChange={(e) => setVibe(e.target.value.slice(0, 500))}
-          placeholder="Describe a mood, craving, or occasion"
-          aria-label="Vibe description"
-        />
+        <div className={styles.inputWrapper}>
+          <input
+            className={styles.input}
+            value={vibe}
+            onChange={(e) => setVibe(e.target.value.slice(0, 500))}
+            placeholder="Describe a mood, craving, or occasion"
+            aria-label="Vibe description"
+          />
+          {vibe.length >= 400 && (
+            <span className={`${styles.charCount} ${vibe.length >= 480 ? styles.charCountWarn : ""}`}>
+              {500 - vibe.length}
+            </span>
+          )}
+        </div>
       ) : (
         <textarea
           className={styles.ingredientInput}

@@ -130,6 +130,24 @@
   background: var(--bg-chip);
   border-radius: 10px;
   padding: 0.3rem;
+  position: relative;
+}
+
+.tabIndicator {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  width: calc(50% - 0.5rem);
+  height: calc(100% - 0.6rem);
+  background: var(--bg-card);
+  border-radius: 7px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+.tabIndicatorRight {
+  transform: translateX(calc(100% + 0.4rem));
 }
 
 .modeTab {
@@ -143,7 +161,9 @@
   border-radius: 7px;
   color: var(--tx-2);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: color 0.15s;
+  position: relative;
+  z-index: 1;
 }
 
 .modeTab:hover {
@@ -151,10 +171,27 @@
 }
 
 .modeTabActive {
-  background: var(--bg-card);
   color: var(--tx-1);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.charCount {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.75rem;
+  font-size: 0.72rem;
+  color: var(--tx-2);
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.charCountWarn {
+  color: var(--clr-accent);
+  font-weight: 600;
 }
 
 .ingredientInput {
