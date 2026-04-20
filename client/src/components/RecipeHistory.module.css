@@ -75,3 +75,20 @@
   color: #f59e0b;
   letter-spacing: 0.05em;
 }
+
+.showMore {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--history-tx2);
+  cursor: pointer;
+  padding: 0.4rem 0;
+  width: 100%;
+  text-align: center;
+  transition: color 0.15s;
+}
+
+.showMore:hover {
+  color: var(--history-tx1);
+}
