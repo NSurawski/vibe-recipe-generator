@@ -46,6 +46,7 @@
   letter-spacing: 0.09em;
   color: var(--tx-2);
   margin: 0;
+  text-align: center;
 }
 
 .chips {
