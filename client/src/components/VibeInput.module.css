@@ -121,8 +121,8 @@
 }
 
 .prefChipActive {
-  background: var(--clr-btn);
-  border-color: var(--clr-btn);
+  background: var(--clr-accent);
+  border-color: var(--clr-accent);
   color: #ffffff;
 }
 
