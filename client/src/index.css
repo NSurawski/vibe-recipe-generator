@@ -38,8 +38,8 @@
   /* States */
   --skeleton: #e0dbd2;
   --history-btn-bg: #f9fafb;
-  --history-hover-bg: #fef3c7;
-  --history-hover-bd: #f59e0b;
+  --history-hover-bg: #fdf0ec;
+  --history-hover-bd: #C4522A;
   --history-tx1: #3B5049;
   --history-tx2: #9ca3af;
   --error-bg: #fef2f2;
@@ -73,8 +73,8 @@
 
   --skeleton: #332f2b;
   --history-btn-bg: #2a2724;
-  --history-hover-bg: #2d2510;
-  --history-hover-bd: #b45309;
+  --history-hover-bg: #2d1a12;
+  --history-hover-bd: #d4623a;
   --history-tx1: #ede8e0;
   --history-tx2: #9a8f82;
   --error-bg: #2d1515;
