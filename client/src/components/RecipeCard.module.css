@@ -244,6 +244,7 @@
   font-weight: 600;
   color: var(--tx-1);
   margin: 0 0 0.6rem;
+  text-align: center;
 }
 
 .ingredientList {
