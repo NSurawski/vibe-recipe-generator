@@ -36,6 +36,7 @@ vi.mock("@anthropic-ai/sdk", () => ({
 let app;
 beforeAll(async () => {
   process.env.NODE_ENV = "test";
+  process.env.ANTHROPIC_API_KEY = "test-key";
   const mod = await import("./server.js");
   app = mod.app;
 });
