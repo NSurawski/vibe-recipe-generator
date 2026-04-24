@@ -7,9 +7,18 @@ const INITIAL_LIMIT = 3;
 interface RecipeHistoryProps {
   history: HistoryEntry[];
   onSelect: (entry: HistoryEntry) => void;
+  onDelete?: (id: string) => void;
 }
 
-function EntryList({ entries, onSelect }: { entries: HistoryEntry[]; onSelect: (e: HistoryEntry) => void }) {
+function EntryList({
+  entries,
+  onSelect,
+  onDelete,
+}: {
+  entries: HistoryEntry[];
+  onSelect: (e: HistoryEntry) => void;
+  onDelete?: (id: string) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? entries : entries.slice(0, INITIAL_LIMIT);
   const hidden = entries.length - INITIAL_LIMIT;
@@ -18,12 +27,21 @@ function EntryList({ entries, onSelect }: { entries: HistoryEntry[]; onSelect: (
     <>
       <ul className={styles.list}>
         {visible.map((entry, i) => (
-          <li key={i}>
+          <li key={i} className={styles.item}>
             <button className={styles.button} onClick={() => onSelect(entry)}>
               <span className={styles.recipeTitle}>{entry.recipe.title}</span>
               <span className={styles.vibe}>"{entry.vibe}"</span>
               {entry.rating ? <span className={styles.stars}>{"★".repeat(entry.rating)}</span> : null}
             </button>
+            {onDelete && (
+              <button
+                className={styles.deleteBtn}
+                onClick={(e) => { e.stopPropagation(); onDelete(entry.id); }}
+                aria-label="Delete recipe"
+              >
+                ×
+              </button>
+            )}
           </li>
         ))}
       </ul>
@@ -36,7 +54,7 @@ function EntryList({ entries, onSelect }: { entries: HistoryEntry[]; onSelect: (
   );
 }
 
-export default function RecipeHistory({ history, onSelect }: RecipeHistoryProps) {
+export default function RecipeHistory({ history, onSelect, onDelete }: RecipeHistoryProps) {
   const favorites = history.filter((e) => e.favorited);
   const recent = history.filter((e) => !e.favorited);
 
@@ -45,14 +63,14 @@ export default function RecipeHistory({ history, onSelect }: RecipeHistoryProps)
       {favorites.length > 0 && (
         <>
           <h3 className={styles.heading}>★ Saved</h3>
-          <EntryList entries={favorites} onSelect={onSelect} />
+          <EntryList entries={favorites} onSelect={onSelect} onDelete={onDelete} />
           {recent.length > 0 && <div className={styles.divider} />}
         </>
       )}
       {recent.length > 0 && (
         <>
           <h3 className={styles.heading}>Recent</h3>
-          <EntryList entries={recent} onSelect={onSelect} />
+          <EntryList entries={recent} onSelect={onSelect} onDelete={onDelete} />
         </>
       )}
     </section>

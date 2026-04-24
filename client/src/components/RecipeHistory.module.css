@@ -25,8 +25,34 @@
   gap: 0.4rem;
 }
 
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.deleteBtn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--history-tx2);
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  border-radius: 4px;
+  opacity: 0.45;
+  transition: opacity 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.deleteBtn:hover {
+  opacity: 1;
+  color: var(--error-tx);
+}
+
 .button {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;

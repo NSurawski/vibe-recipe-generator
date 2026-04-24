@@ -24,7 +24,7 @@ export default function App() {
   const lastVibe = useRef("");
   const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "" });
   const activeController = useRef<AbortController | null>(null);
-  const { history, addToHistory, toggleFavorite, rateRecipe, updateNote } = useRecipeHistory();
+  const { history, addToHistory, toggleFavorite, rateRecipe, updateNote, deleteEntry } = useRecipeHistory();
   const isDailyRecipeRef = useRef(false);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("onboarding-seen"));
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("dark-mode") === "true");
@@ -368,6 +368,7 @@ export default function App() {
                   setCurrentEntryId(entry.id);
                   setScreen("result");
                 }}
+                onDelete={deleteEntry}
               />
             ) : (
               <EmptyHistory onGenerate={(vibe) => generateRecipe(vibe, { diet: [], time: "", skill: "" })} />

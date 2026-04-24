@@ -76,5 +76,13 @@ export function useRecipeHistory() {
     });
   };
 
-  return { history, addToHistory, toggleFavorite, rateRecipe, updateNote };
+  const deleteEntry = (id: string) => {
+    setHistory((prev) => {
+      const updated = prev.filter((e) => e.id !== id);
+      persist(updated);
+      return updated;
+    });
+  };
+
+  return { history, addToHistory, toggleFavorite, rateRecipe, updateNote, deleteEntry };
 }
