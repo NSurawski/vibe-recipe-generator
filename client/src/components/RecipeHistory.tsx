@@ -3,6 +3,7 @@ import type { HistoryEntry } from "../hooks/useRecipeHistory";
 import styles from "./RecipeHistory.module.css";
 
 const INITIAL_LIMIT = 3;
+const SEARCH_THRESHOLD = 4;
 
 interface RecipeHistoryProps {
   history: HistoryEntry[];
@@ -55,11 +56,30 @@ function EntryList({
 }
 
 export default function RecipeHistory({ history, onSelect, onDelete }: RecipeHistoryProps) {
-  const favorites = history.filter((e) => e.favorited);
-  const recent = history.filter((e) => !e.favorited);
+  const [search, setSearch] = useState("");
+
+  const filtered = search.trim()
+    ? history.filter(
+        (e) =>
+          e.recipe.title.toLowerCase().includes(search.toLowerCase()) ||
+          e.vibe.toLowerCase().includes(search.toLowerCase())
+      )
+    : history;
+
+  const favorites = filtered.filter((e) => e.favorited);
+  const recent = filtered.filter((e) => !e.favorited);
 
   return (
     <section className={styles.container}>
+      {history.length >= SEARCH_THRESHOLD && (
+        <input
+          className={styles.search}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search recipes..."
+          aria-label="Search recipes"
+        />
+      )}
       {favorites.length > 0 && (
         <>
           <h3 className={styles.heading}>★ Saved</h3>
@@ -72,6 +92,9 @@ export default function RecipeHistory({ history, onSelect, onDelete }: RecipeHis
           <h3 className={styles.heading}>Recent</h3>
           <EntryList entries={recent} onSelect={onSelect} onDelete={onDelete} />
         </>
+      )}
+      {filtered.length === 0 && search.trim() && (
+        <p className={styles.noResults}>No recipes match "{search}"</p>
       )}
     </section>
   );
