@@ -78,6 +78,7 @@ export default function RecipeCard({
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
+  const [confirmRegen, setConfirmRegen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -284,9 +285,21 @@ export default function RecipeCard({
         </div>
       )}
 
-      <button className={styles.regenerateBtn} onClick={onRegenerate}>
-        Try a different take
-      </button>
+      {confirmRegen ? (
+        <div className={styles.regenConfirm}>
+          <span className={styles.regenConfirmText}>Lose this recipe?</span>
+          <button className={styles.regenConfirmYes} onClick={() => { setConfirmRegen(false); onRegenerate(); }}>
+            Yes, try again
+          </button>
+          <button className={styles.regenConfirmNo} onClick={() => setConfirmRegen(false)}>
+            Keep it
+          </button>
+        </div>
+      ) : (
+        <button className={styles.regenerateBtn} onClick={() => setConfirmRegen(true)}>
+          Try a different take
+        </button>
+      )}
     </div>
   );
 }
