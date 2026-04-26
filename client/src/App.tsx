@@ -24,7 +24,7 @@ export default function App() {
   const lastVibe = useRef("");
   const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "" });
   const activeController = useRef<AbortController | null>(null);
-  const { history, addToHistory, toggleFavorite, rateRecipe, updateNote, deleteEntry } = useRecipeHistory();
+  const { history, addToHistory, toggleFavorite, rateRecipe, updateNote, deleteEntry, updateServings } = useRecipeHistory();
   const isDailyRecipeRef = useRef(false);
   const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem("onboarding-seen"));
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem("dark-mode") === "true");
@@ -40,6 +40,10 @@ export default function App() {
   const currentNote = currentEntryId
     ? (history.find((e) => e.id === currentEntryId)?.note ?? "")
     : "";
+
+  const currentServings = currentEntryId
+    ? (history.find((e) => e.id === currentEntryId)?.servings ?? undefined)
+    : undefined;
 
   const generateRecipe = async (vibe: string, preferences: Preferences) => {
     lastVibe.current = vibe;
@@ -382,6 +386,7 @@ export default function App() {
         )}
         {screen === "result" && recipe && (
           <RecipeCard
+            key={currentEntryId ?? recipe.title}
             recipe={recipe}
             onBack={handleBack}
             onRegenerate={handleRegenerate}
@@ -392,6 +397,8 @@ export default function App() {
             onShare={handleShare}
             note={currentNote}
             onNoteChange={(n) => currentEntryId && updateNote(currentEntryId, n)}
+            savedServings={currentServings}
+            onServingsChange={(s) => currentEntryId && updateServings(currentEntryId, s)}
             onModify={handleModify}
           />
         )}

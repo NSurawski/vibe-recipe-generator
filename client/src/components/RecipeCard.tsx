@@ -13,6 +13,8 @@ interface RecipeCardProps {
   onShare?: () => void;
   note?: string;
   onNoteChange?: (note: string) => void;
+  savedServings?: number;
+  onServingsChange?: (servings: number) => void;
   onModify?: (modification: string) => void;
 }
 
@@ -74,6 +76,8 @@ export default function RecipeCard({
   onShare,
   note = "",
   onNoteChange,
+  savedServings,
+  onServingsChange,
   onModify,
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
@@ -89,8 +93,13 @@ export default function RecipeCard({
   const imageUrl = `https://image.pollinations.ai/prompt/${imagePrompt}?width=640&height=400&nologo=true&seed=${imageSeed}&model=flux`;
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set());
   const baseServings = parseInt(recipe.servings) || 2;
-  const [servings, setServings] = useState(baseServings);
+  const [servings, setServings] = useState(savedServings ?? baseServings);
   const multiplier = servings / baseServings;
+
+  function handleServingsChange(next: number) {
+    setServings(next);
+    onServingsChange?.(next);
+  }
   const [hoverRating, setHoverRating] = useState(0);
   const [modification, setModification] = useState("");
 
@@ -140,9 +149,9 @@ export default function RecipeCard({
           </p>
           {recipe.servings && (
             <div className={styles.servingScaler}>
-              <button className={styles.scalerBtn} onClick={() => setServings((s) => Math.max(1, s - 1))}>−</button>
+              <button className={styles.scalerBtn} onClick={() => handleServingsChange(Math.max(1, servings - 1))}>−</button>
               <span className={styles.servingCount}>{servings} serving{servings !== 1 ? "s" : ""}</span>
-              <button className={styles.scalerBtn} onClick={() => setServings((s) => s + 1)}>+</button>
+              <button className={styles.scalerBtn} onClick={() => handleServingsChange(servings + 1)}>+</button>
             </div>
           )}
         </div>

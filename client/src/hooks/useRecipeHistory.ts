@@ -12,6 +12,7 @@ export interface HistoryEntry {
   favorited?: boolean;
   rating?: number;
   note?: string;
+  servings?: number;
 }
 
 function persist(entries: HistoryEntry[]) {
@@ -76,6 +77,14 @@ export function useRecipeHistory() {
     });
   };
 
+  const updateServings = (id: string, servings: number) => {
+    setHistory((prev) => {
+      const updated = prev.map((e) => e.id === id ? { ...e, servings } : e);
+      persist(updated);
+      return updated;
+    });
+  };
+
   const deleteEntry = (id: string) => {
     setHistory((prev) => {
       const updated = prev.filter((e) => e.id !== id);
@@ -84,5 +93,5 @@ export function useRecipeHistory() {
     });
   };
 
-  return { history, addToHistory, toggleFavorite, rateRecipe, updateNote, deleteEntry };
+  return { history, addToHistory, toggleFavorite, rateRecipe, updateNote, deleteEntry, updateServings };
 }
