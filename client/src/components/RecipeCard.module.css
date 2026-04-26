@@ -363,6 +363,40 @@
   background: var(--clr-accent-deep);
 }
 
+.collectionRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.collectionIcon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.collectionInput {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  border: 1.5px solid var(--bd-input);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--tx-1);
+  transition: border-color 0.15s;
+}
+
+.collectionInput:focus {
+  outline: none;
+  border-color: var(--clr-accent);
+}
+
+.collectionInput::placeholder {
+  color: var(--tx-2);
+  font-style: italic;
+}
+
 .copyBtn {
   width: 100%;
   padding: 0.75rem;

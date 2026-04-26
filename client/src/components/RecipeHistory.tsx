@@ -69,6 +69,19 @@ export default function RecipeHistory({ history, onSelect, onDelete }: RecipeHis
   const favorites = filtered.filter((e) => e.favorited);
   const recent = filtered.filter((e) => !e.favorited);
 
+  // Group favorites by collection
+  const collections = new Map<string, HistoryEntry[]>();
+  for (const entry of favorites) {
+    const key = entry.collection?.trim() || "";
+    if (!collections.has(key)) collections.set(key, []);
+    collections.get(key)!.push(entry);
+  }
+  const collectionKeys = Array.from(collections.keys()).sort((a, b) => {
+    if (a === "") return 1;
+    if (b === "") return -1;
+    return a.localeCompare(b);
+  });
+
   return (
     <section className={styles.container}>
       {history.length >= SEARCH_THRESHOLD && (
@@ -83,7 +96,12 @@ export default function RecipeHistory({ history, onSelect, onDelete }: RecipeHis
       {favorites.length > 0 && (
         <>
           <h3 className={styles.heading}>★ Saved</h3>
-          <EntryList entries={favorites} onSelect={onSelect} onDelete={onDelete} />
+          {collectionKeys.map((key) => (
+            <div key={key} className={styles.collectionGroup}>
+              {key && <p className={styles.collectionLabel}>📁 {key}</p>}
+              <EntryList entries={collections.get(key)!} onSelect={onSelect} onDelete={onDelete} />
+            </div>
+          ))}
           {recent.length > 0 && <div className={styles.divider} />}
         </>
       )}

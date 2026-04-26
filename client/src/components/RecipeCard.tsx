@@ -15,6 +15,8 @@ interface RecipeCardProps {
   onNoteChange?: (note: string) => void;
   savedServings?: number;
   onServingsChange?: (servings: number) => void;
+  collection?: string;
+  onCollectionChange?: (collection: string) => void;
   onModify?: (modification: string) => void;
 }
 
@@ -78,6 +80,8 @@ export default function RecipeCard({
   onNoteChange,
   savedServings,
   onServingsChange,
+  collection = "",
+  onCollectionChange,
   onModify,
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
@@ -239,6 +243,19 @@ export default function RecipeCard({
         >
           {isFavorited ? "♥ Saved" : "♥ Save Recipe"}
         </button>
+      )}
+
+      {isFavorited && onCollectionChange && (
+        <div className={styles.collectionRow}>
+          <span className={styles.collectionIcon}>📁</span>
+          <input
+            className={styles.collectionInput}
+            value={collection}
+            onChange={(e) => onCollectionChange(e.target.value)}
+            placeholder="Add to collection (e.g. Date Night)"
+            aria-label="Collection name"
+          />
+        </div>
       )}
 
       <button className={styles.copyBtn} onClick={handleCopy}>

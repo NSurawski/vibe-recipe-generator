@@ -125,6 +125,19 @@
   color: var(--history-tx2);
 }
 
+.collectionGroup {
+  margin-bottom: 0.75rem;
+}
+
+.collectionLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--history-tx2);
+  text-transform: uppercase;
+  margin: 0 0 0.4rem;
+}
+
 .noResults {
   font-size: 0.85rem;
   color: var(--history-tx2);
