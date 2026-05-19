@@ -22,4 +22,5 @@ export interface Preferences {
   diet: string[];
   time: string;
   skill: string;
+  cuisine: string;
 }
