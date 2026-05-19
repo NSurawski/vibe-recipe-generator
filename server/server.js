@@ -267,6 +267,59 @@ app.post("/api/modify", async (req, res) => {
   }
 });
 
+const SUBSTITUTE_PROMPT = `You are a knowledgeable chef helping home cooks swap out ingredients they don't have.
+
+Given a recipe and a specific ingredient to substitute, suggest the BEST single substitute.
+
+Return ONLY valid JSON matching this exact schema:
+{
+  "item": "string — the substitute ingredient name",
+  "amount": "string — the amount (adjust if needed for the substitute)",
+  "note": "string (optional) — a short preparation note if needed",
+  "reason": "string — one short sentence explaining why this works"
+}
+
+Be practical. Prioritize common pantry substitutes. If the ingredient is truly irreplaceable, suggest the closest alternative and note the difference.`;
+
+app.post("/api/substitute", async (req, res) => {
+  const { recipe, ingredient } = req.body;
+
+  if (!ingredient?.item || !recipe?.title) {
+    return res.status(400).json({ error: "Please provide a recipe and ingredient" });
+  }
+
+  if (!hasApiKey) {
+    return res.json({
+      item: `mock substitute for ${ingredient.item}`,
+      amount: ingredient.amount,
+      reason: "This is a demo substitution — add an API key for real suggestions.",
+    });
+  }
+
+  try {
+    const message = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 256,
+      system: SUBSTITUTE_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: `Recipe: "${recipe.title}"\nIngredient to substitute: ${ingredient.amount} ${ingredient.item}${ingredient.note ? ` (${ingredient.note})` : ""}`,
+        },
+      ],
+    });
+
+    const text = message.content[0].text.trim();
+    const jsonStart = text.indexOf("{");
+    const jsonEnd = text.lastIndexOf("}");
+    const parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+    res.json(parsed);
+  } catch (err) {
+    console.error("Substitution failed:", err.message);
+    res.status(500).json({ error: "Failed to find a substitution. Please try again." });
+  }
+});
+
 export { app };
 
 if (process.env.NODE_ENV !== "test") {

@@ -256,6 +256,13 @@
   gap: 0.35rem;
 }
 
+.ingredientRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .ingredient {
   display: flex;
   align-items: center;
@@ -266,6 +273,8 @@
   user-select: none;
   position: relative;
   transition: opacity 0.3s;
+  flex: 1;
+  min-width: 0;
 }
 
 .ingredient::after {
@@ -285,6 +294,53 @@
 
 .ingredientChecked::after {
   width: calc(100% - 1rem);
+}
+
+.ingredientSubstituted {
+  color: var(--clr-accent);
+}
+
+.subBtn {
+  background: none;
+  border: 1px solid var(--bd-input);
+  color: var(--tx-2);
+  font-size: 0.75rem;
+  font-family: inherit;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s, color 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+
+.ingredientRow:hover .subBtn {
+  opacity: 1;
+}
+
+.subBtn:hover {
+  background: var(--bg-card-warm);
+  color: var(--tx-1);
+}
+
+.subBtnLoading {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.subReason {
+  width: 100%;
+  font-size: 0.78rem;
+  color: var(--tx-2);
+  font-style: italic;
+  margin: 0 0 0.1rem 1.3rem;
+  line-height: 1.4;
 }
 
 .bullet {

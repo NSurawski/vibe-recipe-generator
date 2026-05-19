@@ -91,6 +91,8 @@ export default function RecipeCard({
   const [imageError, setImageError] = useState(false);
   const [exporting, setExporting] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
+  type SubState = "loading" | { item: string; amount: string; note?: string; reason: string };
+  const [substitutions, setSubstitutions] = useState<Map<number, SubState>>(new Map());
 
   const imageSeed = recipe.title.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
   const imagePrompt = encodeURIComponent(
@@ -141,6 +143,34 @@ export default function RecipeCard({
     } finally {
       setExporting(false);
     }
+  }
+
+  async function handleSubstitute(index: number, ing: { item: string; amount: string; note?: string }) {
+    setSubstitutions((prev) => new Map(prev).set(index, "loading"));
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL ?? ""}/api/substitute`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipe, ingredient: ing }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSubstitutions((prev) => new Map(prev).set(index, data));
+    } catch {
+      setSubstitutions((prev) => {
+        const next = new Map(prev);
+        next.delete(index);
+        return next;
+      });
+    }
+  }
+
+  function clearSubstitution(index: number) {
+    setSubstitutions((prev) => {
+      const next = new Map(prev);
+      next.delete(index);
+      return next;
+    });
   }
 
   return (
@@ -197,17 +227,42 @@ export default function RecipeCard({
       <section className={styles.section}>
         <h4 className={styles.sectionTitle}>Ingredients</h4>
         <ul className={styles.ingredientList}>
-          {recipe.ingredients.map((ing, i) => (
-            <li
-              key={i}
-              className={`${styles.ingredient} ${checkedIngredients.has(i) ? styles.ingredientChecked : ""}`}
-              onClick={() => toggleIngredient(i)}
-            >
-              <span className={styles.bullet} />
-              {scaleAmount(ing.amount, multiplier)} {ing.item}
-              {ing.note && <span className={styles.note}> — {ing.note}</span>}
-            </li>
-          ))}
+          {recipe.ingredients.map((ing, i) => {
+            const sub = substitutions.get(i);
+            return (
+              <li key={i} className={styles.ingredientRow}>
+                <div
+                  className={`${styles.ingredient} ${checkedIngredients.has(i) ? styles.ingredientChecked : ""} ${sub && sub !== "loading" ? styles.ingredientSubstituted : ""}`}
+                  onClick={() => toggleIngredient(i)}
+                >
+                  <span className={styles.bullet} />
+                  {sub && sub !== "loading" ? (
+                    <>
+                      {scaleAmount(sub.amount, multiplier)} {sub.item}
+                      {sub.note && <span className={styles.note}> — {sub.note}</span>}
+                    </>
+                  ) : (
+                    <>
+                      {scaleAmount(ing.amount, multiplier)} {ing.item}
+                      {ing.note && <span className={styles.note}> — {ing.note}</span>}
+                    </>
+                  )}
+                </div>
+                <button
+                  className={`${styles.subBtn} ${sub === "loading" ? styles.subBtnLoading : ""}`}
+                  onClick={(e) => { e.stopPropagation(); sub && sub !== "loading" ? clearSubstitution(i) : handleSubstitute(i, ing); }}
+                  aria-label={sub && sub !== "loading" ? "Restore original ingredient" : `Find substitute for ${ing.item}`}
+                  title={sub && sub !== "loading" ? "Restore original" : "Find a substitute"}
+                  disabled={sub === "loading"}
+                >
+                  {sub === "loading" ? "…" : sub ? "↩" : "≈"}
+                </button>
+                {sub && sub !== "loading" && (
+                  <p className={styles.subReason}>{sub.reason}</p>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </section>
 
