@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Recipe } from "../types";
 import styles from "./RecipeCard.module.css";
 
@@ -89,6 +89,8 @@ export default function RecipeCard({
   const [confirmRegen, setConfirmRegen] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const imageSeed = recipe.title.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
   const imagePrompt = encodeURIComponent(
@@ -122,6 +124,25 @@ export default function RecipeCard({
     });
   }
 
+  async function handleExportImage() {
+    if (!exportRef.current || exporting) return;
+    setExporting(true);
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+      const canvas = await html2canvas(exportRef.current, {
+        useCORS: true,
+        scale: 2,
+        backgroundColor: "#1a1612",
+      });
+      const link = document.createElement("a");
+      link.download = `${recipe.title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <div className={styles.container} aria-live="polite" aria-atomic="true">
       <button className={styles.back} onClick={onBack}>
@@ -129,6 +150,7 @@ export default function RecipeCard({
       </button>
       <h2 className={styles.pageTitle}>Your Recipe</h2>
 
+      <div ref={exportRef} className={styles.exportContent}>
       {!imageError && (
         <div className={`${styles.dishImageWrapper} ${imageLoaded ? styles.dishImageLoaded : ""}`}>
           {!imageLoaded && <div className={styles.dishImageSkeleton} />}
@@ -136,6 +158,7 @@ export default function RecipeCard({
             src={imageUrl}
             alt={recipe.title}
             className={styles.dishImage}
+            crossOrigin="anonymous"
             onLoad={() => setImageLoaded(true)}
             onError={() => setImageError(true)}
           />
@@ -205,6 +228,7 @@ export default function RecipeCard({
           <p className={styles.vibeNotesText}>{recipe.vibe_notes}</p>
         </section>
       )}
+      </div>
 
       {onNoteChange && (
         <section className={styles.noteSection}>
@@ -260,6 +284,10 @@ export default function RecipeCard({
 
       <button className={styles.copyBtn} onClick={handleCopy}>
         {copied ? "✓ Copied!" : "Copy Recipe"}
+      </button>
+
+      <button className={styles.exportBtn} onClick={handleExportImage} disabled={exporting}>
+        {exporting ? "Saving…" : "Export as Image"}
       </button>
 
       {onShare && (
