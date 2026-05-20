@@ -20,7 +20,7 @@ function pickRandom(arr: string[], n: number): string[] {
 }
 
 const QUICK_VIBES = pickRandom(ALL_VIBES, 4);
-const DIET_OPTIONS = ["Vegetarian", "Vegan", "GF", "Dairy-free"];
+const DIET_OPTIONS = ["Vegetarian", "Vegan", "GF", "Dairy-free", "Nut-free", "Keto"];
 const TIME_OPTIONS = ["< 30 min", "30–60 min", "1h+"];
 const SKILL_OPTIONS = ["Easy", "Medium", "Hard"];
 const CUISINE_OPTIONS = [
