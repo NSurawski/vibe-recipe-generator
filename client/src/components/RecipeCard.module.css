@@ -71,11 +71,6 @@
   opacity: 1;
 }
 
-@media print {
-  .dishImageWrapper {
-    display: none;
-  }
-}
 
 .headerCard {
   background: var(--clr-header-bg);
@@ -672,12 +667,23 @@
 }
 
 @media print {
+  /* Hide all interactive / screen-only elements */
+  .dishImageWrapper,
   .back,
   .pageTitle,
   .saveBtn,
   .copyBtn,
   .printBtn,
-  .regenerateBtn {
+  .exportBtn,
+  .shareBtn,
+  .regenerateBtn,
+  .regenConfirm,
+  .noteSection,
+  .ratingRow,
+  .collectionRow,
+  .refineSection,
+  .subBtn,
+  .scalerBtn {
     display: none !important;
   }
 
@@ -685,9 +691,18 @@
     animation: none;
   }
 
+  .exportContent {
+    padding: 0;
+    overflow: visible;
+    border-radius: 0;
+  }
+
+  /* Header card */
   .headerCard {
     background: #ffffff;
     border: 1.5px solid #3B5049;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .title {
@@ -702,6 +717,10 @@
     color: #8A8070;
   }
 
+  .servingCount {
+    color: #5a5247;
+  }
+
   .tag {
     background: transparent;
     border: 1px solid #3B5049;
@@ -710,5 +729,56 @@
 
   .tagDot {
     background: #3B5049;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Ingredients */
+  .sectionTitle {
+    color: #2C2C2C;
+  }
+
+  .ingredient {
+    color: #2C2C2C;
+    cursor: default;
+  }
+
+  .ingredientChecked {
+    opacity: 0.45;
+  }
+
+  .ingredientSubstituted {
+    color: #C4522A;
+  }
+
+  .bullet {
+    background: #3B5049;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .note {
+    color: #8A8070;
+  }
+
+  /* Steps */
+  .step {
+    color: #2C2C2C;
+  }
+
+  .stepNum {
+    color: #3B5049;
+  }
+
+  /* Vibe notes */
+  .vibeNotes {
+    background: transparent;
+    border-left-color: #C4522A;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .vibeNotesText {
+    color: #5a5247;
   }
 }
