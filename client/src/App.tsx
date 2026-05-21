@@ -22,7 +22,7 @@ export default function App() {
   const [retryAfter, setRetryAfter] = useState<number | null>(null);
   const [streamingText, setStreamingText] = useState("");
   const lastVibe = useRef("");
-  const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "", cuisine: "" });
+  const lastPrefs = useRef<Preferences>({ diet: [], time: "", skill: "", cuisine: "", mealType: "" });
   const activeController = useRef<AbortController | null>(null);
   const { history, addToHistory, toggleFavorite, rateRecipe, updateNote, deleteEntry, updateServings, setCollection } = useRecipeHistory();
   const isDailyRecipeRef = useRef(false);
@@ -189,7 +189,7 @@ export default function App() {
   const handleGenerateDaily = () => {
     const vibe = DAILY_VIBES[Math.floor(Math.random() * DAILY_VIBES.length)];
     isDailyRecipeRef.current = true;
-    generateRecipe(vibe, { diet: [], time: "", skill: "", cuisine: "" });
+    generateRecipe(vibe, { diet: [], time: "", skill: "", cuisine: "", mealType: "" });
   };
 
   const mainRef = useRef<HTMLElement>(null);
@@ -379,7 +379,7 @@ export default function App() {
                 onDelete={deleteEntry}
               />
             ) : (
-              <EmptyHistory onGenerate={(vibe) => generateRecipe(vibe, { diet: [], time: "", skill: "", cuisine: "" })} />
+              <EmptyHistory onGenerate={(vibe) => generateRecipe(vibe, { diet: [], time: "", skill: "", cuisine: "", mealType: "" })} />
             )}
           </div>
         )}

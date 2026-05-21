@@ -23,4 +23,5 @@ export interface Preferences {
   time: string;
   skill: string;
   cuisine: string;
+  mealType: string;
 }

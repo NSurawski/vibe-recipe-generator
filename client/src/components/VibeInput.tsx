@@ -23,6 +23,10 @@ const QUICK_VIBES = pickRandom(ALL_VIBES, 4);
 const DIET_OPTIONS = ["Vegetarian", "Vegan", "GF", "Dairy-free", "Nut-free", "Keto"];
 const TIME_OPTIONS = ["< 30 min", "30–60 min", "1h+"];
 const SKILL_OPTIONS = ["Easy", "Medium", "Hard"];
+const MEAL_TYPE_OPTIONS = [
+  "Soup", "Salad", "Sandwich", "Pasta", "Stir-fry",
+  "Curry", "Pizza", "Tacos", "Bowl", "Burger", "Breakfast", "Dessert",
+];
 const CUISINE_OPTIONS = [
   "Italian", "Japanese", "Mexican", "Thai", "Indian",
   "Mediterranean", "French", "Korean", "Middle Eastern", "American",
@@ -36,19 +40,20 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
   const [time, setTime] = useState("");
   const [skill, setSkill] = useState("");
   const [cuisine, setCuisine] = useState("");
+  const [mealType, setMealType] = useState("");
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (mode === "vibe" && vibe.trim()) {
-      onSubmit(vibe.trim(), { diet, time, skill, cuisine });
+      onSubmit(vibe.trim(), { diet, time, skill, cuisine, mealType });
     } else if (mode === "ingredients" && ingredients.trim()) {
-      onSubmit(`I have these ingredients: ${ingredients.trim()}. Make something great with them.`, { diet, time, skill, cuisine });
+      onSubmit(`I have these ingredients: ${ingredients.trim()}. Make something great with them.`, { diet, time, skill, cuisine, mealType });
     }
   };
 
   const handleSurprise = () => {
     const randomVibe = ALL_VIBES[Math.floor(Math.random() * ALL_VIBES.length)];
-    onSubmit(randomVibe, { diet, time, skill, cuisine });
+    onSubmit(randomVibe, { diet, time, skill, cuisine, mealType });
   };
 
   const toggleDiet = (option: string) => {
@@ -137,6 +142,21 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
                 type="button"
                 className={`${styles.prefChip} ${diet.includes(option) ? styles.prefChipActive : ""}`}
                 onClick={() => toggleDiet(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className={styles.prefRow}>
+          <span className={styles.prefLabel}>Meal</span>
+          <div className={styles.chips}>
+            {MEAL_TYPE_OPTIONS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className={`${styles.prefChip} ${mealType === option ? styles.prefChipActive : ""}`}
+                onClick={() => setMealType(mealType === option ? "" : option)}
               >
                 {option}
               </button>

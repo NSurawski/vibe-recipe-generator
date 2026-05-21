@@ -137,6 +137,7 @@ app.post("/api/recipe", async (req, res) => {
 
   const prefParts = [];
   if (preferences?.diet?.length > 0) prefParts.push(`Dietary: ${preferences.diet.join(", ")}`);
+  if (preferences?.mealType) prefParts.push(`Meal type: ${preferences.mealType}`);
   if (preferences?.time) prefParts.push(`Time: ${preferences.time}`);
   if (preferences?.skill) prefParts.push(`Skill level: ${preferences.skill}`);
   if (preferences?.cuisine) prefParts.push(`Cuisine style: ${preferences.cuisine}`);
