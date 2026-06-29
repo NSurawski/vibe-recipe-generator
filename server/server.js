@@ -142,6 +142,9 @@ app.post("/api/recipe", async (req, res) => {
   if (preferences?.skill) prefParts.push(`Skill level: ${preferences.skill}`);
   if (preferences?.cuisine) prefParts.push(`Cuisine style: ${preferences.cuisine}`);
   const prefString = prefParts.length > 0 ? `\nPreferences: ${prefParts.join(" | ")}` : "";
+  const ingredientString = preferences?.ingredients
+    ? `\nIngredients to prioritize (build the recipe around these, adding only what's necessary): ${preferences.ingredients}`
+    : "";
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
@@ -168,7 +171,7 @@ app.post("/api/recipe", async (req, res) => {
       messages: [
         {
           role: "user",
-          content: `Generate a recipe for this vibe: "${vibe.trim()}"${prefString}`,
+          content: `Generate a recipe for this vibe: "${vibe.trim()}"${prefString}${ingredientString}`,
         },
       ],
       system: RECIPE_PROMPT,

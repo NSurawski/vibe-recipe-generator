@@ -126,55 +126,43 @@
   color: #ffffff;
 }
 
-.modeTabs {
-  display: flex;
-  gap: 0.4rem;
-  background: var(--bg-chip);
-  border-radius: 10px;
-  padding: 0.3rem;
-  position: relative;
-}
-
-.tabIndicator {
-  position: absolute;
-  top: 0.3rem;
-  left: 0.3rem;
-  width: calc(50% - 0.5rem);
-  height: calc(100% - 0.6rem);
-  background: var(--bg-card);
-  border-radius: 7px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease;
-  pointer-events: none;
-}
-
-.tabIndicatorRight {
-  transform: translateX(calc(100% + 0.4rem));
-}
-
-.modeTab {
-  flex: 1;
-  padding: 0.5rem;
-  font-size: 0.85rem;
+.fridgeToggle {
+  align-self: flex-start;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.82rem;
   font-weight: 500;
   font-family: inherit;
-  background: transparent;
-  border: none;
-  border-radius: 7px;
   color: var(--tx-2);
+  background: transparent;
+  border: 1.5px dashed var(--bd-chip);
+  border-radius: 999px;
   cursor: pointer;
-  transition: color 0.15s;
-  position: relative;
-  z-index: 1;
+  transition: all 0.15s;
 }
 
-.modeTab:hover {
-  color: var(--tx-1);
+.fridgeToggle:hover {
+  color: var(--clr-btn);
+  border-color: var(--clr-btn);
 }
 
-.modeTabActive {
-  color: var(--tx-1);
-  font-weight: 600;
+.fridgeToggleActive {
+  color: var(--clr-btn);
+  border-color: var(--clr-btn);
+  border-style: solid;
+}
+
+.fridgeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.fridgeHint {
+  font-size: 0.75rem;
+  color: var(--tx-2);
+  margin: 0;
+  text-align: center;
+  font-style: italic;
 }
 
 .inputWrapper {

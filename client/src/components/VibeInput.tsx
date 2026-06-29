@@ -33,8 +33,8 @@ const CUISINE_OPTIONS = [
 ];
 
 export default function VibeInput({ onSubmit }: VibeInputProps) {
-  const [mode, setMode] = useState<"vibe" | "ingredients">("vibe");
   const [vibe, setVibe] = useState("");
+  const [showIngredients, setShowIngredients] = useState(false);
   const [ingredients, setIngredients] = useState("");
   const [diet, setDiet] = useState<string[]>([]);
   const [time, setTime] = useState("");
@@ -42,18 +42,19 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
   const [cuisine, setCuisine] = useState("");
   const [mealType, setMealType] = useState("");
 
+  const buildPrefs = () => ({
+    diet, time, skill, cuisine, mealType,
+    ingredients: showIngredients && ingredients.trim() ? ingredients.trim() : undefined,
+  });
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (mode === "vibe" && vibe.trim()) {
-      onSubmit(vibe.trim(), { diet, time, skill, cuisine, mealType });
-    } else if (mode === "ingredients" && ingredients.trim()) {
-      onSubmit(`I have these ingredients: ${ingredients.trim()}. Make something great with them.`, { diet, time, skill, cuisine, mealType });
-    }
+    if (vibe.trim()) onSubmit(vibe.trim(), buildPrefs());
   };
 
   const handleSurprise = () => {
     const randomVibe = ALL_VIBES[Math.floor(Math.random() * ALL_VIBES.length)];
-    onSubmit(randomVibe, { diet, time, skill, cuisine, mealType });
+    onSubmit(randomVibe, buildPrefs());
   };
 
   const toggleDiet = (option: string) => {
@@ -62,74 +63,66 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
     );
   };
 
-  const canSubmit = mode === "vibe" ? !!vibe.trim() : !!ingredients.trim();
+  const canSubmit = !!vibe.trim();
 
   return (
     <form onSubmit={handleSubmit} className={styles.container}>
       <h2 className={styles.heading}>What's the vibe?</h2>
 
-      <div className={styles.modeTabs}>
-        <div className={`${styles.tabIndicator} ${mode === "ingredients" ? styles.tabIndicatorRight : ""}`} />
-        <button
-          type="button"
-          className={`${styles.modeTab} ${mode === "vibe" ? styles.modeTabActive : ""}`}
-          onClick={() => setMode("vibe")}
-        >
-          Describe a vibe
-        </button>
-        <button
-          type="button"
-          className={`${styles.modeTab} ${mode === "ingredients" ? styles.modeTabActive : ""}`}
-          onClick={() => setMode("ingredients")}
-        >
-          Use what I have
-        </button>
+      <div className={styles.inputWrapper}>
+        <input
+          className={styles.input}
+          value={vibe}
+          onChange={(e) => setVibe(e.target.value.slice(0, 500))}
+          placeholder="Describe a mood, craving, or occasion"
+          aria-label="Vibe description"
+        />
+        {vibe.length >= 400 && (
+          <span className={`${styles.charCount} ${vibe.length >= 480 ? styles.charCountWarn : ""}`}>
+            {500 - vibe.length}
+          </span>
+        )}
       </div>
 
-      {mode === "vibe" ? (
-        <div className={styles.inputWrapper}>
-          <input
-            className={styles.input}
-            value={vibe}
-            onChange={(e) => setVibe(e.target.value.slice(0, 500))}
-            placeholder="Describe a mood, craving, or occasion"
-            aria-label="Vibe description"
+      <button
+        type="button"
+        className={`${styles.fridgeToggle} ${showIngredients ? styles.fridgeToggleActive : ""}`}
+        onClick={() => setShowIngredients((prev) => !prev)}
+      >
+        {showIngredients ? "− Hide fridge ingredients" : "+ Use what I have"}
+      </button>
+
+      {showIngredients && (
+        <div className={styles.fridgeSection}>
+          <textarea
+            className={styles.ingredientInput}
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value.slice(0, 500))}
+            placeholder="tomatoes, pasta, garlic, olive oil..."
+            aria-label="Ingredients you have"
+            rows={3}
+            autoFocus
           />
-          {vibe.length >= 400 && (
-            <span className={`${styles.charCount} ${vibe.length >= 480 ? styles.charCountWarn : ""}`}>
-              {500 - vibe.length}
-            </span>
-          )}
+          <p className={styles.fridgeHint}>Claude will build your recipe around these ingredients</p>
         </div>
-      ) : (
-        <textarea
-          className={styles.ingredientInput}
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value.slice(0, 500))}
-          placeholder="tomatoes, pasta, garlic, olive oil..."
-          aria-label="Ingredients"
-          rows={3}
-        />
       )}
 
-      {mode === "vibe" && (
-        <div className={styles.section}>
-          <p className={styles.sectionLabel}>QUICK VIBES</p>
-          <div className={styles.chips}>
-            {QUICK_VIBES.map((label) => (
-              <button
-                key={label}
-                type="button"
-                className={`${styles.vibeChip} ${vibe === label ? styles.vibeChipActive : ""}`}
-                onClick={() => setVibe(label)}
-              >
-                <span className={styles.vibeChipDot} />
-                {label}
-              </button>
-            ))}
-          </div>
+      <div className={styles.section}>
+        <p className={styles.sectionLabel}>QUICK VIBES</p>
+        <div className={styles.chips}>
+          {QUICK_VIBES.map((label) => (
+            <button
+              key={label}
+              type="button"
+              className={`${styles.vibeChip} ${vibe === label ? styles.vibeChipActive : ""}`}
+              onClick={() => setVibe(label)}
+            >
+              <span className={styles.vibeChipDot} />
+              {label}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
       <div className={styles.section}>
         <p className={styles.sectionLabel}>PREFERENCES</p>
@@ -211,13 +204,11 @@ export default function VibeInput({ onSubmit }: VibeInputProps) {
       </div>
 
       <div className={styles.buttonRow}>
-        {mode === "vibe" && (
-          <button type="button" className={styles.surpriseBtn} onClick={handleSurprise}>
-            ✨ Surprise me
-          </button>
-        )}
+        <button type="button" className={styles.surpriseBtn} onClick={handleSurprise}>
+          ✨ Surprise me
+        </button>
         <button type="submit" className={styles.submitBtn} disabled={!canSubmit}>
-          {mode === "ingredients" ? "Make Something With This" : "+ Generate My Recipe"}
+          + Generate My Recipe
         </button>
       </div>
     </form>
