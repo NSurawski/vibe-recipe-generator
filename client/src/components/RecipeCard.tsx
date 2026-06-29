@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import type { Recipe } from "../types";
 import styles from "./RecipeCard.module.css";
+import ShareModal from "./ShareModal";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -85,8 +86,8 @@ export default function RecipeCard({
   onModify,
 }: RecipeCardProps) {
   const [copied, setCopied] = useState(false);
-  const [shared, setShared] = useState(false);
   const [confirmRegen, setConfirmRegen] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -345,17 +346,12 @@ export default function RecipeCard({
         {exporting ? "Saving…" : "Export as Image"}
       </button>
 
-      {onShare && (
-        <button
-          className={styles.shareBtn}
-          onClick={() => {
-            onShare();
-            setShared(true);
-            setTimeout(() => setShared(false), 2000);
-          }}
-        >
-          {shared ? "✓ Link Copied!" : "Share Recipe"}
-        </button>
+      <button className={styles.shareBtn} onClick={() => setShowShareModal(true)}>
+        Share Recipe
+      </button>
+
+      {showShareModal && (
+        <ShareModal recipe={recipe} onClose={() => setShowShareModal(false)} />
       )}
 
       <button className={styles.printBtn} onClick={() => window.print()}>
