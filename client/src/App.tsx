@@ -166,21 +166,6 @@ export default function App() {
     }
   }, []);
 
-  const handleShare = async () => {
-    if (!recipe) return;
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(recipe))));
-    const url = `${window.location.origin}${window.location.pathname}?r=${encoded}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: recipe.title, text: recipe.description, url });
-        return;
-      } catch {
-        // User cancelled or API unavailable — fall through to clipboard
-      }
-    }
-    navigator.clipboard.writeText(url);
-  };
-
   const DAILY_VIBES = [
     "cozy morning at home", "fresh and light to start the day", "easy comforting weeknight",
     "something a bit indulgent", "healthy and vibrant", "warm and satisfying",
@@ -398,7 +383,6 @@ export default function App() {
             onToggleFavorite={() => currentEntryId && toggleFavorite(currentEntryId)}
             rating={currentRating}
             onRate={(r) => currentEntryId && rateRecipe(currentEntryId, r)}
-            onShare={handleShare}
             note={currentNote}
             onNoteChange={(n) => currentEntryId && updateNote(currentEntryId, n)}
             savedServings={currentServings}
