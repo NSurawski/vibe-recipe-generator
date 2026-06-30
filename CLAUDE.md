@@ -7,7 +7,7 @@ An AI-powered recipe generator that interprets vibes, moods, and feelings to cre
 - **Stack:** React 19 + TypeScript + Vite (frontend), Node.js + Express (backend)
 - **AI:** Anthropic Claude API (Sonnet) via `@anthropic-ai/sdk` on the server
 - **Styling:** CSS Modules (`.module.css` files per component)
-- **Branch:** `source` is the working branch
+- **Branch:** `main` is the working branch
 
 ## Architecture
 
