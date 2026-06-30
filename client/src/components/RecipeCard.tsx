@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import type { Recipe } from "../types";
+import type { Recipe, Nutrition } from "../types";
 import styles from "./RecipeCard.module.css";
 import ShareModal from "./ShareModal";
 
@@ -11,7 +11,6 @@ interface RecipeCardProps {
   onToggleFavorite?: () => void;
   rating?: number;
   onRate?: (rating: number) => void;
-  onShare?: () => void;
   note?: string;
   onNoteChange?: (note: string) => void;
   savedServings?: number;
@@ -76,7 +75,6 @@ export default function RecipeCard({
   onToggleFavorite,
   rating = 0,
   onRate,
-  onShare,
   note = "",
   onNoteChange,
   savedServings,
@@ -88,6 +86,9 @@ export default function RecipeCard({
   const [copied, setCopied] = useState(false);
   const [confirmRegen, setConfirmRegen] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [nutrition, setNutrition] = useState<Nutrition | null>(null);
+  const [nutritionLoading, setNutritionLoading] = useState(false);
+  const [nutritionError, setNutritionError] = useState<string | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -163,6 +164,26 @@ export default function RecipeCard({
         next.delete(index);
         return next;
       });
+    }
+  }
+
+  async function handleNutrition() {
+    if (nutrition || nutritionLoading) return;
+    setNutritionLoading(true);
+    setNutritionError(null);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL ?? ""}/api/nutrition`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipe }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setNutrition(data);
+    } catch {
+      setNutritionError("Couldn't estimate nutrition — try again.");
+    } finally {
+      setNutritionLoading(false);
     }
   }
 
@@ -284,6 +305,51 @@ export default function RecipeCard({
           <p className={styles.vibeNotesText}>{recipe.vibe_notes}</p>
         </section>
       )}
+      </div>
+
+      <div className={styles.nutritionSection}>
+        {!nutrition && (
+          <button
+            className={styles.nutritionBtn}
+            onClick={handleNutrition}
+            disabled={nutritionLoading}
+          >
+            {nutritionLoading ? "Estimating…" : "Estimate Nutrition"}
+          </button>
+        )}
+        {nutritionError && <p className={styles.nutritionError}>{nutritionError}</p>}
+        {nutrition && (
+          <div className={styles.nutritionPanel}>
+            <p className={styles.nutritionLabel}>NUTRITION ESTIMATE <span className={styles.nutritionPer}>per serving</span></p>
+            <div className={styles.nutritionGrid}>
+              <div className={styles.nutritionStat}>
+                <span className={styles.nutritionValue}>{nutrition.calories}</span>
+                <span className={styles.nutritionName}>Cal</span>
+              </div>
+              <div className={styles.nutritionDivider} />
+              <div className={styles.nutritionStat}>
+                <span className={styles.nutritionValue}>{nutrition.protein_g}g</span>
+                <span className={styles.nutritionName}>Protein</span>
+              </div>
+              <div className={styles.nutritionDivider} />
+              <div className={styles.nutritionStat}>
+                <span className={styles.nutritionValue}>{nutrition.carbs_g}g</span>
+                <span className={styles.nutritionName}>Carbs</span>
+              </div>
+              <div className={styles.nutritionDivider} />
+              <div className={styles.nutritionStat}>
+                <span className={styles.nutritionValue}>{nutrition.fat_g}g</span>
+                <span className={styles.nutritionName}>Fat</span>
+              </div>
+              <div className={styles.nutritionDivider} />
+              <div className={styles.nutritionStat}>
+                <span className={styles.nutritionValue}>{nutrition.fiber_g}g</span>
+                <span className={styles.nutritionName}>Fiber</span>
+              </div>
+            </div>
+            <p className={styles.nutritionDisclaimer}>AI estimate — values are approximate</p>
+          </div>
+        )}
       </div>
 
       {onNoteChange && (

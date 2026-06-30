@@ -390,6 +390,106 @@
   margin: 0;
 }
 
+.nutritionSection {
+  margin-bottom: 1.25rem;
+}
+
+.nutritionBtn {
+  width: 100%;
+  padding: 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--tx-2);
+  background: transparent;
+  border: 1.5px dashed var(--bd-input);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.nutritionBtn:hover:not(:disabled) {
+  border-color: var(--clr-accent);
+  color: var(--tx-1);
+}
+
+.nutritionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nutritionError {
+  font-size: 0.8rem;
+  color: var(--tx-2);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+.nutritionPanel {
+  background: var(--bg-card-warm);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.nutritionLabel {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: var(--tx-2);
+  margin: 0 0 0.75rem;
+}
+
+.nutritionPer {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.nutritionGrid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.nutritionStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+.nutritionValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--tx-1);
+  line-height: 1;
+}
+
+.nutritionName {
+  font-size: 0.68rem;
+  color: var(--tx-2);
+  white-space: nowrap;
+}
+
+.nutritionDivider {
+  width: 1px;
+  height: 2rem;
+  background: var(--bd-input);
+  flex-shrink: 0;
+}
+
+.nutritionDisclaimer {
+  font-size: 0.72rem;
+  color: var(--tx-2);
+  font-style: italic;
+  margin: 0;
+  text-align: center;
+}
+
 .saveBtn {
   width: 100%;
   padding: 0.875rem;
@@ -683,7 +783,8 @@
   .collectionRow,
   .refineSection,
   .subBtn,
-  .scalerBtn {
+  .scalerBtn,
+  .nutritionSection {
     display: none !important;
   }
 

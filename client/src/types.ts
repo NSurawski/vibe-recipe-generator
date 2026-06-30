@@ -18,6 +18,14 @@ export interface Recipe {
   vibe_notes: string;
 }
 
+export interface Nutrition {
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number;
+}
+
 export interface Preferences {
   diet: string[];
   time: string;

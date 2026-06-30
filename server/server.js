@@ -325,6 +325,56 @@ app.post("/api/substitute", async (req, res) => {
   }
 });
 
+const NUTRITION_PROMPT = `You are a nutritionist estimating the macronutrients of a recipe per serving.
+
+Given a recipe with ingredients and serving count, estimate the nutrition per single serving.
+
+Return ONLY valid JSON matching this exact schema:
+{
+  "calories": number,
+  "protein_g": number,
+  "carbs_g": number,
+  "fat_g": number,
+  "fiber_g": number
+}
+
+Round all values to the nearest whole number. Base estimates on typical ingredient weights and preparation methods. If servings are ambiguous, assume 2 servings.`;
+
+app.post("/api/nutrition", async (req, res) => {
+  const { recipe } = req.body;
+
+  if (!recipe?.title || !Array.isArray(recipe?.ingredients)) {
+    return res.status(400).json({ error: "Please provide a recipe" });
+  }
+
+  if (!hasApiKey) {
+    return res.json({ calories: 420, protein_g: 18, carbs_g: 52, fat_g: 14, fiber_g: 4 });
+  }
+
+  try {
+    const message = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 128,
+      system: NUTRITION_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: `Recipe: "${recipe.title}" (${recipe.servings ?? "2 servings"})\nIngredients:\n${recipe.ingredients.map((i) => `- ${i.amount} ${i.item}${i.note ? ` (${i.note})` : ""}`).join("\n")}`,
+        },
+      ],
+    });
+
+    const text = message.content[0].text.trim();
+    const jsonStart = text.indexOf("{");
+    const jsonEnd = text.lastIndexOf("}");
+    const parsed = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+    res.json(parsed);
+  } catch (err) {
+    console.error("Nutrition estimate failed:", err.message);
+    res.status(500).json({ error: "Failed to estimate nutrition. Please try again." });
+  }
+});
+
 export { app };
 
 if (process.env.NODE_ENV !== "test") {
