@@ -155,4 +155,44 @@ describe("useRecipeHistory", () => {
     expect(result.current.history).toHaveLength(1);
     expect(result.current.history[0].recipe.title).toBe("Test Recipe");
   });
+
+  it("returns empty history when localStorage contains corrupt JSON", () => {
+    localStorage.setItem("vibe-recipe-history", "{not valid json");
+    const { result } = renderHook(() => useRecipeHistory());
+    expect(result.current.history).toHaveLength(0);
+  });
+
+  it("backfills missing IDs on legacy entries", () => {
+    const legacy = {
+      recipe: mockRecipe,
+      vibe: "old",
+      savedAt: new Date().toISOString(),
+    };
+    localStorage.setItem("vibe-recipe-history", JSON.stringify([legacy]));
+    const { result } = renderHook(() => useRecipeHistory());
+    expect(result.current.history[0].id).toBeTruthy();
+  });
+
+  it("toggleFavorite on an unknown id is a no-op", () => {
+    const { result } = renderHook(() => useRecipeHistory());
+    act(() => { result.current.addToHistory(mockRecipe, "vibe"); });
+    const before = result.current.history[0].favorited;
+    act(() => { result.current.toggleFavorite("does-not-exist"); });
+    expect(result.current.history[0].favorited).toBe(before);
+  });
+
+  it("deleteEntry on an unknown id leaves history unchanged", () => {
+    const { result } = renderHook(() => useRecipeHistory());
+    act(() => { result.current.addToHistory(mockRecipe, "vibe"); });
+    act(() => { result.current.deleteEntry("does-not-exist"); });
+    expect(result.current.history).toHaveLength(1);
+  });
+
+  it("setCollection trims whitespace-only strings to undefined", () => {
+    const { result } = renderHook(() => useRecipeHistory());
+    let id: string;
+    act(() => { id = result.current.addToHistory(mockRecipe, "vibe"); });
+    act(() => { result.current.setCollection(id!, "   "); });
+    expect(result.current.history[0].collection).toBeUndefined();
+  });
 });

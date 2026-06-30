@@ -69,6 +69,42 @@ describe("POST /api/recipe — validation", () => {
   });
 });
 
+describe("POST /api/recipe — boundary cases", () => {
+  it("accepts a vibe at exactly 500 characters", async () => {
+    const res = await request(app)
+      .post("/api/recipe")
+      .send({ vibe: "a".repeat(500) })
+      .buffer(true);
+    expect(res.status).toBe(200);
+    expect(res.headers["content-type"]).toContain("text/event-stream");
+  });
+
+  it("accepts a request without preferences", async () => {
+    const res = await request(app)
+      .post("/api/recipe")
+      .send({ vibe: "cozy" })
+      .buffer(true);
+    expect(res.status).toBe(200);
+  });
+
+  it("accepts a request with empty preferences object", async () => {
+    const res = await request(app)
+      .post("/api/recipe")
+      .send({ vibe: "cozy", preferences: { diet: [], time: "", skill: "" } })
+      .buffer(true);
+    expect(res.status).toBe(200);
+  });
+});
+
+describe("GET /health", () => {
+  it("returns ok status and live mode when API key is set", async () => {
+    const res = await request(app).get("/health");
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe("ok");
+    expect(res.body.mode).toBe("live");
+  });
+});
+
 describe("POST /api/recipe — streaming", () => {
   it("responds with SSE content-type for a valid vibe", async () => {
     const res = await request(app)
