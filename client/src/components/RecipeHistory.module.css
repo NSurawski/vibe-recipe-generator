@@ -138,6 +138,105 @@
   margin: 0 0 0.4rem;
 }
 
+.topRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.shoppingListToggle {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--clr-accent);
+  cursor: pointer;
+  padding: 0.2rem 0;
+  transition: opacity 0.15s;
+}
+
+.shoppingListToggle:hover {
+  opacity: 0.7;
+}
+
+.selectToolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-card-warm, rgba(255,255,255,0.04));
+  border-radius: 8px;
+  border: 1px solid var(--bd-card);
+}
+
+.cancelSelectBtn {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--history-tx2);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+
+.cancelSelectBtn:hover {
+  color: var(--history-tx1);
+}
+
+.selectCount {
+  flex: 1;
+  font-size: 0.8rem;
+  color: var(--history-tx2);
+  text-align: center;
+}
+
+.buildListBtn {
+  background: var(--clr-accent);
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffffff;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  flex-shrink: 0;
+}
+
+.buildListBtn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.buildListBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.selectBox {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--bd-input);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.selectBoxChecked {
+  background: var(--clr-accent);
+  border-color: var(--clr-accent);
+}
+
 .noResults {
   font-size: 0.85rem;
   color: var(--history-tx2);

@@ -230,10 +230,16 @@
   flex-shrink: 0;
 }
 
+.quickActions {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
 .cookingModeBtn {
-  width: 100%;
-  padding: 0.9rem;
-  font-size: 1rem;
+  flex: 1;
+  padding: 0.9rem 0.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
   font-family: inherit;
   color: #ffffff;
@@ -242,12 +248,31 @@
   border-radius: 12px;
   cursor: pointer;
   transition: opacity 0.15s;
-  margin-bottom: 1.5rem;
   letter-spacing: 0.02em;
 }
 
 .cookingModeBtn:hover {
   opacity: 0.88;
+}
+
+.shoppingListBtn {
+  flex: 1;
+  padding: 0.9rem 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--tx-1);
+  background: var(--bg-card-warm);
+  border: 1.5px solid var(--bd-input);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.shoppingListBtn:hover {
+  border-color: var(--clr-accent);
+  color: var(--clr-accent);
 }
 
 .section {

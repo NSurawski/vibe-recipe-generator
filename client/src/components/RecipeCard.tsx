@@ -3,6 +3,8 @@ import type { Recipe, Nutrition } from "../types";
 import styles from "./RecipeCard.module.css";
 import ShareModal from "./ShareModal";
 import CookingMode from "./CookingMode";
+import ShoppingListModal from "./ShoppingListModal";
+import type { RecipeShoppingGroup } from "./ShoppingListModal";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -88,6 +90,7 @@ export default function RecipeCard({
   const [confirmRegen, setConfirmRegen] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [cookingMode, setCookingMode] = useState(false);
+  const [showShoppingList, setShowShoppingList] = useState(false);
   const [nutrition, setNutrition] = useState<Nutrition | null>(null);
   const [nutritionLoading, setNutritionLoading] = useState(false);
   const [nutritionError, setNutritionError] = useState<string | null>(null);
@@ -114,6 +117,19 @@ export default function RecipeCard({
   }
   const [hoverRating, setHoverRating] = useState(0);
   const [modification, setModification] = useState("");
+
+  function buildShoppingGroup(): RecipeShoppingGroup {
+    return {
+      title: recipe.title,
+      ingredients: recipe.ingredients.map((ing, i) => {
+        const sub = substitutions.get(i);
+        if (sub && sub !== "loading") {
+          return `${scaleAmount(sub.amount, multiplier)} ${sub.item}${sub.note ? ` — ${sub.note}` : ""}`;
+        }
+        return `${scaleAmount(ing.amount, multiplier)} ${ing.item}${ing.note ? ` — ${ing.note}` : ""}`;
+      }),
+    };
+  }
 
   function toggleIngredient(index: number) {
     setCheckedIngredients((prev) => {
@@ -248,9 +264,14 @@ export default function RecipeCard({
         )}
       </div>
 
-      <button className={styles.cookingModeBtn} onClick={() => setCookingMode(true)}>
-        Start Cooking
-      </button>
+      <div className={styles.quickActions}>
+        <button className={styles.cookingModeBtn} onClick={() => setCookingMode(true)}>
+          Start Cooking
+        </button>
+        <button className={styles.shoppingListBtn} onClick={() => setShowShoppingList(true)}>
+          Shopping List
+        </button>
+      </div>
 
       <section className={styles.section}>
         <h4 className={styles.sectionTitle}>Ingredients</h4>
@@ -483,6 +504,13 @@ export default function RecipeCard({
           steps={recipe.steps}
           title={recipe.title}
           onClose={() => setCookingMode(false)}
+        />
+      )}
+
+      {showShoppingList && (
+        <ShoppingListModal
+          groups={[buildShoppingGroup()]}
+          onClose={() => setShowShoppingList(false)}
         />
       )}
     </div>
