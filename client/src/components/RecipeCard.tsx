@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import type { Recipe, Nutrition } from "../types";
 import styles from "./RecipeCard.module.css";
 import ShareModal from "./ShareModal";
+import CookingMode from "./CookingMode";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -86,6 +87,7 @@ export default function RecipeCard({
   const [copied, setCopied] = useState(false);
   const [confirmRegen, setConfirmRegen] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [cookingMode, setCookingMode] = useState(false);
   const [nutrition, setNutrition] = useState<Nutrition | null>(null);
   const [nutritionLoading, setNutritionLoading] = useState(false);
   const [nutritionError, setNutritionError] = useState<string | null>(null);
@@ -245,6 +247,10 @@ export default function RecipeCard({
           </div>
         )}
       </div>
+
+      <button className={styles.cookingModeBtn} onClick={() => setCookingMode(true)}>
+        Start Cooking
+      </button>
 
       <section className={styles.section}>
         <h4 className={styles.sectionTitle}>Ingredients</h4>
@@ -470,6 +476,14 @@ export default function RecipeCard({
         <button className={styles.regenerateBtn} onClick={() => setConfirmRegen(true)}>
           Try a different take
         </button>
+      )}
+
+      {cookingMode && (
+        <CookingMode
+          steps={recipe.steps}
+          title={recipe.title}
+          onClose={() => setCookingMode(false)}
+        />
       )}
     </div>
   );

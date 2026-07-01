@@ -1,0 +1,167 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #0d0c0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  font-family: inherit;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--clr-accent, #3B5049);
+  transition: width 0.3s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+.meta {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 4rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.recipeTitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepCounter {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+}
+
+.stepContent {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 3rem 0 1rem;
+}
+
+.stepText {
+  font-size: clamp(1.5rem, 5vw, 2.25rem);
+  color: #ffffff;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+  font-weight: 400;
+}
+
+.footer {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding-top: 1.5rem;
+  cursor: default;
+}
+
+.navBtn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.navBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.navBtn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.nextBtn {
+  background: var(--clr-accent, #3B5049);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.nextBtn:hover {
+  background: var(--clr-accent-hover, #4a6359) !important;
+}
+
+.doneBtn {
+  background: #d97706;
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.doneBtn:hover {
+  background: #b45309 !important;
+}
+
+.tapHint {
+  position: absolute;
+  bottom: 1.25rem;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.05em;
+  margin: 0;
+  pointer-events: none;
+}

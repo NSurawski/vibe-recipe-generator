@@ -230,6 +230,26 @@
   flex-shrink: 0;
 }
 
+.cookingModeBtn {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #ffffff;
+  background: linear-gradient(135deg, #3B5049 0%, #C4522A 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+.cookingModeBtn:hover {
+  opacity: 0.88;
+}
+
 .section {
   margin-bottom: 1.25rem;
 }
